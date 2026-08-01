@@ -2,9 +2,13 @@ package com.exagonal001.libros.infra.models;
 
 import java.util.UUID;
 
+import com.exagonal001.autores.infra.models.AutoresEntity;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -25,7 +29,9 @@ public class LibroEntity {
     @GeneratedValue 
     UUID id;
     private String titulo;
-    private String autor;
+    @ManyToOne
+    @JoinColumn(name = "id_autor", referencedColumnName = "id")
+    private AutoresEntity idautor;
     private int anioPublicacion;
     
 }

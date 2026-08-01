@@ -1,7 +1,10 @@
 package com.exagonal001.libros.infra.persistencie;
 
+import java.util.UUID;
+
 import org.springframework.stereotype.Repository;
 
+import com.exagonal001.autores.infra.models.AutoresEntity;
 import com.exagonal001.libros.application.port.out.LibroRepositoryPort;
 import com.exagonal001.libros.domain.models.AnioPublicacion;
 import com.exagonal001.libros.domain.models.Libro;
@@ -18,9 +21,11 @@ public class JpaLibroRepositoryAdapter implements LibroRepositoryPort {
 
     @Override
     public Libro save(Libro libro) {
-        LibroEntity libroEntity = new LibroEntity(libro.id(), libro.titulo(), libro.autor(), libro.anio().getAnio());
+        AutoresEntity autorEntity = new AutoresEntity();
+        autorEntity.setId(UUID.fromString(libro.Idautor()));
+        LibroEntity libroEntity = new LibroEntity(libro.id(), libro.titulo(), autorEntity, libro.anio().getAnio());
         LibroEntity savedEntity = springDataLibroRepository.save(libroEntity);
-        return new Libro(savedEntity.getId(), savedEntity.getTitulo(), savedEntity.getAutor(), new AnioPublicacion(savedEntity.getAnioPublicacion()));
+        return new Libro(savedEntity.getId(), savedEntity.getTitulo(), savedEntity.getIdautor().getId().toString(), new AnioPublicacion(savedEntity.getAnioPublicacion()));
 
     }
 

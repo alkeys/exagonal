@@ -40,7 +40,7 @@ public class LibroController {
         return new LibroResponse(
             createdLibro.id().toString(),
             createdLibro.titulo(),
-            createdLibro.autor(),
+            createdLibro.Idautor(),
             createdLibro.anio().getAnio()
 
         );

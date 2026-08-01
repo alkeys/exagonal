@@ -1,0 +1,180 @@
+{
+  "continente": "América",
+  "paises": [
+    {
+      "pais": "Antigua y Barbuda",
+      "codigo_iso": "AG",
+      "nacionalidad": "antiguano"
+    },
+    {
+      "pais": "Argentina",
+      "codigo_iso": "AR",
+      "nacionalidad": "argentino"
+    },
+    {
+      "pais": "Bahamas",
+      "codigo_iso": "BS",
+      "nacionalidad": "bahameño"
+    },
+    {
+      "pais": "Barbados",
+      "codigo_iso": "BB",
+      "nacionalidad": "barbadense"
+    },
+    {
+      "pais": "Belice",
+      "codigo_iso": "BZ",
+      "nacionalidad": "beliceño"
+    },
+    {
+      "pais": "Bolivia",
+      "codigo_iso": "BO",
+      "nacionalidad": "boliviano"
+    },
+    {
+      "pais": "Brasil",
+      "codigo_iso": "BR",
+      "nacionalidad": "brasileño"
+    },
+    {
+      "pais": "Canadá",
+      "codigo_iso": "CA",
+      "nacionalidad": "canadiense"
+    },
+    {
+      "pais": "Chile",
+      "codigo_iso": "CL",
+      "nacionalidad": "chileno"
+    },
+    {
+      "pais": "Colombia",
+      "codigo_iso": "CO",
+      "nacionalidad": "colombiano"
+    },
+    {
+      "pais": "Costa Rica",
+      "codigo_iso": "CR",
+      "nacionalidad": "costarricense"
+    },
+    {
+      "pais": "Cuba",
+      "codigo_iso": "CU",
+      "nacionalidad": "cubano"
+    },
+    {
+      "pais": "Dominica",
+      "codigo_iso": "DM",
+      "nacionalidad": "dominiqués"
+    },
+    {
+      "pais": "Ecuador",
+      "codigo_iso": "EC",
+      "nacionalidad": "ecuatoriano"
+    },
+    {
+      "pais": "El Salvador",
+      "codigo_iso": "SV",
+      "nacionalidad": "salvadoreño"
+    },
+    {
+      "pais": "Estados Unidos",
+      "codigo_iso": "US",
+      "nacionalidad": "estadounidense"
+    },
+    {
+      "pais": "Granada",
+      "codigo_iso": "GD",
+      "nacionalidad": "granadino"
+    },
+    {
+      "pais": "Guatemala",
+      "codigo_iso": "GT",
+      "nacionalidad": "guatemalteco"
+    },
+    {
+      "pais": "Guyana",
+      "codigo_iso": "GY",
+      "nacionalidad": "guyanés"
+    },
+    {
+      "pais": "Haití",
+      "codigo_iso": "HT",
+      "nacionalidad": "haitiano"
+    },
+    {
+      "pais": "Honduras",
+      "codigo_iso": "HN",
+      "nacionalidad": "hondureño"
+    },
+    {
+      "pais": "Jamaica",
+      "codigo_iso": "JM",
+      "nacionalidad": "jamaicano"
+    },
+    {
+      "pais": "México",
+      "codigo_iso": "MX",
+      "nacionalidad": "mexicano"
+    },
+    {
+      "pais": "Nicaragua",
+      "codigo_iso": "NI",
+      "nacionalidad": "nicaragüense"
+    },
+    {
+      "pais": "Panamá",
+      "codigo_iso": "PA",
+      "nacionalidad": "panameño"
+    },
+    {
+      "pais": "Paraguay",
+      "codigo_iso": "PY",
+      "nacionalidad": "paraguayo"
+    },
+    {
+      "pais": "Perú",
+      "codigo_iso": "PE",
+      "nacionalidad": "peruano"
+    },
+    {
+      "pais": "República Dominicana",
+      "codigo_iso": "DO",
+      "nacionalidad": "dominicano"
+    },
+    {
+      "pais": "San Cristóbal y Nieves",
+      "codigo_iso": "KN",
+      "nacionalidad": "sancristobaleño"
+    },
+    {
+      "pais": "San Vicente y las Granadinas",
+      "codigo_iso": "VC",
+      "nacionalidad": "sanvicentino"
+    },
+    {
+      "pais": "Santa Lucía",
+      "codigo_iso": "LC",
+      "nacionalidad": "santalucense"
+    },
+    {
+      "pais": "Surinam",
+      "codigo_iso": "SR",
+      "nacionalidad": "surinamés"
+    },
+    {
+      "pais": "Trinidad y Tobago",
+      "codigo_iso": "TT",
+      "nacionalidad": "trinitense"
+    },
+    {
+      "pais": "Uruguay",
+      "codigo_iso": "UY",
+      "nacionalidad": "uruguayo"
+    },
+    {
+      "pais": "Venezuela",
+      "codigo_iso": "VE",
+      "nacionalidad": "venezolano"
+    }
+  ]
+}
