@@ -82,4 +82,9 @@ public class JpaUserRepositoryAdapter implements UserRepositoryPort {
         springDataUserRepository.save(userEntity);
     }
 
+
+    public boolean existsByRol(String rol) {
+        return springDataUserRepository.existsByRol(rol);
+    }
+
 }

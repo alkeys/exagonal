@@ -89,4 +89,8 @@ public class UserService implements CreateUserCase, GetAllUserCase, GetUserCase,
         userRepositoryPort.updateUser(id, nombre, apellido);
     }
 
+
+    public boolean existsByRol(String rol) {
+        return userRepositoryPort.existsByRol(rol);
+    }
 }

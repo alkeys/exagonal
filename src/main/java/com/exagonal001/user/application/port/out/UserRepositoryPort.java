@@ -43,4 +43,8 @@ public interface UserRepositoryPort {
      * @param apellido apellido del usuario
      */
     void updateUser(String id, String nombre, String apellido);
+
+
+
+    boolean existsByRol(String rol);
 }
