@@ -35,10 +35,10 @@ public class JpaUserRepositoryAdapter implements UserRepositoryPort {
      * @return usuario persistido con su identificador generado
      */
     @Override
-    public Optional<User> save(User user) {
-        UserEntity userEntity = new UserEntity(user.id(), user.nombre(), user.apellido(), user.rol(), user.password());
+    public Optional<UserResponse> save(User user) {
+        UserEntity userEntity = new UserEntity(user.id(), user.nombre(), user.apellido(), user.email(), user.rol(), user.password());
         UserEntity savedUser = springDataUserRepository.save(userEntity);
-        return Optional.of(new User(savedUser.getId(), savedUser.getNombre(), savedUser.getApellido(), savedUser.getRol(), savedUser.getPassword()));
+        return Optional.of(new UserResponse(savedUser.getId(), savedUser.getNombre(), savedUser.getApellido(), savedUser.getEmail(), savedUser.getRol()));
     }
 
     /**
@@ -49,7 +49,7 @@ public class JpaUserRepositoryAdapter implements UserRepositoryPort {
     @Override
     public List<UserResponse> getAllUsers() {
         return springDataUserRepository.findAll().stream()
-                .map(userEntity -> new UserResponse(userEntity.getId(), userEntity.getNombre(), userEntity.getApellido(), userEntity.getRol()))
+                .map(userEntity -> new UserResponse(userEntity.getId(), userEntity.getNombre(), userEntity.getApellido(), userEntity.getEmail(), userEntity.getRol()))
                 .toList();
     }
 
@@ -62,7 +62,7 @@ public class JpaUserRepositoryAdapter implements UserRepositoryPort {
     @Override
     public UserResponse getUserById(String id) {
         return springDataUserRepository.findById(UUID.fromString(id))
-                .map(userEntity -> new UserResponse(userEntity.getId(), userEntity.getNombre(), userEntity.getApellido(), userEntity.getRol()))
+                .map(userEntity -> new UserResponse(userEntity.getId(), userEntity.getNombre(), userEntity.getApellido(), userEntity.getEmail(), userEntity.getRol()))
                 .orElse(null);
     }
 

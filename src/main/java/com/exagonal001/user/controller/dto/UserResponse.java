@@ -13,6 +13,7 @@ public record UserResponse(
     UUID id,
     String nombre,
     String apellido,
+    String email,
     String rol
 ) {
 }

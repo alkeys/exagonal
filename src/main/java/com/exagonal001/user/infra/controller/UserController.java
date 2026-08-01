@@ -59,11 +59,9 @@ public class UserController {
      */
     @PostMapping
     public UserResponse createUser(@RequestBody UserRequest userRequest) {
-        final User user = new User(null, userRequest.nombre(), userRequest.apellido(), userRequest.rol(), userRequest.password());
-        final Optional<User> createdUser = createUserCase.createUser(user);
-        return createdUser
-                .map(value -> new UserResponse(value.id(), value.nombre(), value.apellido(), value.rol()))
-                .orElseThrow();
+        final User user = new User(null, userRequest.nombre(), userRequest.apellido(),userRequest.email(), userRequest.rol(), userRequest.password());
+        final Optional<UserResponse> createdUser = createUserCase.createUser(user);
+        return createdUser.orElse(null);
     }
 
     /**

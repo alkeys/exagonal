@@ -13,6 +13,7 @@ public record User(
   UUID id,
   String nombre,
   String apellido,
+  String email,
   String rol,
   String password
 ) {

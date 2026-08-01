@@ -45,10 +45,11 @@ public class UserService implements CreateUserCase, GetAllUserCase, GetUserCase,
      * @return usuario persistido, si la operación fue exitosa
      */
     @Override
-    public Optional<User> createUser(User user) {
+    public Optional<UserResponse> createUser(User user) {
         String encodedPassword = passwordEncoder.encode(user.password());
-        User userWithEncodedPassword = new User(user.id(), user.nombre(), user.apellido(), user.rol(), encodedPassword);
-        return userRepositoryPort.save(userWithEncodedPassword);
+        User userWithEncodedPassword = new User(user.id(), user.nombre(), user.apellido(), user.email(), user.rol(), encodedPassword);
+        UserResponse savedUser = userRepositoryPort.save(userWithEncodedPassword).orElse(null);
+        return Optional.ofNullable(savedUser);
     }
 
     /**
@@ -72,7 +73,7 @@ public class UserService implements CreateUserCase, GetAllUserCase, GetUserCase,
     public UserResponse getUserById(String id) {
         UserResponse user2 = userRepositoryPort.getUserById(id);
         if (user2 != null) {
-            return new UserResponse(user2.id(), user2.nombre(), user2.apellido(), user2.rol());
+            return new UserResponse(user2.id(), user2.nombre(), user2.apellido(),user2.email(), user2.rol());
         }
         return null;
     }

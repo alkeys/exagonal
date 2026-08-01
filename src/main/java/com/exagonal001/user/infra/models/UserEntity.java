@@ -26,6 +26,7 @@ public class UserEntity {
     private UUID id;
     private String nombre;
     private String apellido;
+    private String email;
     private String rol;
     private String password;
 }

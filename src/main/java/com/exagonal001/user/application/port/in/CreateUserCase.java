@@ -16,5 +16,5 @@ public interface CreateUserCase {
      * @param user usuario con los datos a guardar
      * @return usuario creado
      */
-    Optional<User> createUser(User user);
+    Optional<UserResponse> createUser(User user);
 }

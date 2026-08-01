@@ -38,6 +38,7 @@ class InitializerHelper {
                     null,
                     "Alex",
                     "Moran",
+                    "alex.moran@example.com",
                     "ADMIN",
                     "admin"
             ));

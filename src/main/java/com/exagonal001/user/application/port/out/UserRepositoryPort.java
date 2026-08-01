@@ -18,7 +18,7 @@ public interface UserRepositoryPort {
      * @param user usuario a persistir
      * @return usuario persistido con su identificador asignado
      */
-    Optional<User> save(User user);
+    Optional<UserResponse> save(User user);
 
     /**
      * Recupera todos los usuarios almacenados.
