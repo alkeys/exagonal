@@ -8,9 +8,12 @@ import java.util.UUID;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 
 import com.exagonal001.user.application.service.UserService;
 import com.exagonal001.user.domain.models.User;
+
+import jakarta.transaction.Transactional;
 
 @Configuration
 public class DataInitializer {
@@ -25,10 +28,10 @@ public class DataInitializer {
     }
 }
 
-@org.springframework.stereotype.Component
+@Component
 class InitializerHelper {
 
-    @org.springframework.transaction.annotation.Transactional
+    @Transactional
     public void initialize(UserService userService) {
         if (!userService.existsByRol("ADMIN")) {
             userService.createUser(new User(
