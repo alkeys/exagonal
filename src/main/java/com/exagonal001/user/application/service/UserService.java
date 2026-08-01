@@ -3,6 +3,7 @@ package com.exagonal001.user.application.service;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.exagonal001.user.application.port.in.CreateUserCase;
@@ -10,6 +11,7 @@ import com.exagonal001.user.application.port.in.GetAllUserCase;
 import com.exagonal001.user.application.port.in.GetUserCase;
 import com.exagonal001.user.application.port.in.UpdateUserCase;
 import com.exagonal001.user.application.port.out.UserRepositoryPort;
+import com.exagonal001.user.controller.dto.UserResponse;
 import com.exagonal001.user.domain.models.User;
 
 /**
@@ -23,14 +25,17 @@ import com.exagonal001.user.domain.models.User;
 public class UserService implements CreateUserCase, GetAllUserCase, GetUserCase, UpdateUserCase {
 
     private final UserRepositoryPort userRepositoryPort;
+    private final PasswordEncoder passwordEncoder;
 
     /**
      * Crea el servicio con el puerto de persistencia requerido.
      *
      * @param userRepositoryPort adaptador encargado de guardar y listar usuarios
+     * @param passwordEncoder encargado de cifrar la contraseña antes de persistirla
      */
-    public UserService(UserRepositoryPort userRepositoryPort) {
+    public UserService(UserRepositoryPort userRepositoryPort, PasswordEncoder passwordEncoder) {
         this.userRepositoryPort = userRepositoryPort;
+        this.passwordEncoder = passwordEncoder;
     }
 
     /**
@@ -41,7 +46,9 @@ public class UserService implements CreateUserCase, GetAllUserCase, GetUserCase,
      */
     @Override
     public Optional<User> createUser(User user) {
-        return userRepositoryPort.save(user);
+        String encodedPassword = passwordEncoder.encode(user.password());
+        User userWithEncodedPassword = new User(user.id(), user.nombre(), user.apellido(), user.rol(), encodedPassword);
+        return userRepositoryPort.save(userWithEncodedPassword);
     }
 
     /**
@@ -50,7 +57,7 @@ public class UserService implements CreateUserCase, GetAllUserCase, GetUserCase,
      * @return lista de usuarios existentes
      */
     @Override
-    public List<User> getAllUsers() {
+    public List<UserResponse> getAllUsers() {
         return userRepositoryPort.getAllUsers();
     }
 
@@ -62,8 +69,12 @@ public class UserService implements CreateUserCase, GetAllUserCase, GetUserCase,
      * @return usuario encontrado o Optional.empty() si no se encuentra
      */
     @Override
-    public User getUserById(String id) {
-        return userRepositoryPort.getUserById(id);
+    public UserResponse getUserById(String id) {
+        UserResponse user2 = userRepositoryPort.getUserById(id);
+        if (user2 != null) {
+            return new UserResponse(user2.id(), user2.nombre(), user2.apellido(), user2.rol());
+        }
+        return null;
     }
 
     /**

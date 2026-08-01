@@ -7,6 +7,7 @@ import java.util.UUID;
 import org.springframework.stereotype.Repository;
 
 import com.exagonal001.user.application.port.out.UserRepositoryPort;
+import com.exagonal001.user.controller.dto.UserResponse;
 import com.exagonal001.user.domain.models.User;
 import com.exagonal001.user.infra.models.UserEntity;
 
@@ -35,9 +36,9 @@ public class JpaUserRepositoryAdapter implements UserRepositoryPort {
      */
     @Override
     public Optional<User> save(User user) {
-        UserEntity userEntity = new UserEntity(user.id(), user.nombre(), user.apellido());
+        UserEntity userEntity = new UserEntity(user.id(), user.nombre(), user.apellido(), user.rol(), user.password());
         UserEntity savedUser = springDataUserRepository.save(userEntity);
-        return Optional.of(new User(savedUser.getId(), savedUser.getNombre(), savedUser.getApellido()));
+        return Optional.of(new User(savedUser.getId(), savedUser.getNombre(), savedUser.getApellido(), savedUser.getRol(), savedUser.getPassword()));
     }
 
     /**
@@ -46,9 +47,9 @@ public class JpaUserRepositoryAdapter implements UserRepositoryPort {
      * @return lista de usuarios mapeados al dominio
      */
     @Override
-    public List<User> getAllUsers() {
+    public List<UserResponse> getAllUsers() {
         return springDataUserRepository.findAll().stream()
-                .map(userEntity -> new User(userEntity.getId(), userEntity.getNombre(), userEntity.getApellido()))
+                .map(userEntity -> new UserResponse(userEntity.getId(), userEntity.getNombre(), userEntity.getApellido(), userEntity.getRol()))
                 .toList();
     }
 
@@ -59,9 +60,9 @@ public class JpaUserRepositoryAdapter implements UserRepositoryPort {
      * @return usuario encontrado o Optional.empty() si no se encuentra
      */
     @Override
-    public User getUserById(String id) {
+    public UserResponse getUserById(String id) {
         return springDataUserRepository.findById(UUID.fromString(id))
-                .map(userEntity -> new User(userEntity.getId(), userEntity.getNombre(), userEntity.getApellido()))
+                .map(userEntity -> new UserResponse(userEntity.getId(), userEntity.getNombre(), userEntity.getApellido(), userEntity.getRol()))
                 .orElse(null);
     }
 

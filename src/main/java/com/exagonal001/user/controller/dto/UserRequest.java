@@ -8,6 +8,8 @@ package com.exagonal001.user.controller.dto;
  */
 public record UserRequest(
     String nombre,
-    String apellido
+    String apellido,
+    String rol,
+    String password
 ) {
 }

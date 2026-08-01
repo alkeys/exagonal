@@ -2,6 +2,7 @@ package com.exagonal001.user.application.port.in;
 
 import java.util.Optional;
 
+import com.exagonal001.user.controller.dto.UserResponse;
 import com.exagonal001.user.domain.models.User;
 
 /**

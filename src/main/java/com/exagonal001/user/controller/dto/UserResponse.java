@@ -12,6 +12,7 @@ import java.util.UUID;
 public record UserResponse(
     UUID id,
     String nombre,
-    String apellido
+    String apellido,
+    String rol
 ) {
 }

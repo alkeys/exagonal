@@ -59,10 +59,10 @@ public class UserController {
      */
     @PostMapping
     public UserResponse createUser(@RequestBody UserRequest userRequest) {
-        final User user = new User(null, userRequest.nombre(), userRequest.apellido());
+        final User user = new User(null, userRequest.nombre(), userRequest.apellido(), userRequest.rol(), userRequest.password());
         final Optional<User> createdUser = createUserCase.createUser(user);
         return createdUser
-                .map(value -> new UserResponse(value.id(), value.nombre(), value.apellido()))
+                .map(value -> new UserResponse(value.id(), value.nombre(), value.apellido(), value.rol()))
                 .orElseThrow();
     }
 
@@ -73,9 +73,7 @@ public class UserController {
      */
     @GetMapping
     public List<UserResponse> getAllUsers() {
-        return getAllUserCase.getAllUsers().stream()
-                .map(user -> new UserResponse(user.id(), user.nombre(), user.apellido()))
-                .toList();
+        return getAllUserCase.getAllUsers();
     }
 
 
@@ -87,8 +85,7 @@ public class UserController {
      * @return una cadena de texto
      */
     @GetMapping("getUserById/{id}")
-    public User getMethodName(@RequestParam String param) {
-        // Lógica para manejar el parámetro de consulta
+    public UserResponse getMethodName(@RequestParam String param) {
         return getUserCase.getUserById(param);
     }
 

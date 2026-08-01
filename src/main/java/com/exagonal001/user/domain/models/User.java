@@ -12,7 +12,9 @@ import java.util.UUID;
 public record User(
   UUID id,
   String nombre,
-  String apellido
+  String apellido,
+  String rol,
+  String password
 ) {
   public User {
     if (nombre == null || nombre.isBlank()) {

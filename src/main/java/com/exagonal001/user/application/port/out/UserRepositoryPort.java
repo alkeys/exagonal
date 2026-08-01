@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import com.exagonal001.user.controller.dto.UserResponse;
 import com.exagonal001.user.domain.models.User;
 
 /**
@@ -24,7 +25,7 @@ public interface UserRepositoryPort {
      *
      * @return lista completa de usuarios
      */
-    List<User> getAllUsers();
+    List<UserResponse> getAllUsers();
 
     /**
      * Recupera un usuario por su identificador.
@@ -32,7 +33,7 @@ public interface UserRepositoryPort {
      * @param id identificador del usuario
      * @return usuario encontrado o Optional.empty() si no se encuentra
      */
-    User getUserById(String id);
+    UserResponse getUserById(String id);
 
     /**
      * Actualiza un usuario por su identificador.

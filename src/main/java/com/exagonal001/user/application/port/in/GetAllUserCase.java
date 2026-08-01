@@ -2,6 +2,7 @@ package com.exagonal001.user.application.port.in;
 
 import java.util.List;
 
+import com.exagonal001.user.controller.dto.UserResponse;
 import com.exagonal001.user.domain.models.User;
 
 /**
@@ -14,5 +15,5 @@ public interface GetAllUserCase {
      *
      * @return lista de usuarios
      */
-    List<User> getAllUsers();
+    List<UserResponse> getAllUsers();
 }
