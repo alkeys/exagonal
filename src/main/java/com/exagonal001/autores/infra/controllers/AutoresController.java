@@ -20,9 +20,18 @@ import java.util.List;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 
 @RestController
 @RequestMapping("/autores")
+@Tag(name = "Autores", description = "Operaciones para la gestion de autores")
 public class AutoresController {
 
     private final CreateAutoresCase createAutorCase;
@@ -38,6 +47,12 @@ public class AutoresController {
      * @param autor El autor a crear.
      * @return El autor creado.
      */
+    @Operation(summary = "Crear un autor", description = "Registra un nuevo autor en el sistema")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Autor creado correctamente",
+                    content = @Content(schema = @Schema(implementation = AutoresResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Datos de entrada invalidos", content = @Content())
+    })
     @PostMapping
     public AutoresResponse createAutor(@RequestBody AutoresRequest autor) {
         var autorDomain = new Autore(
@@ -63,6 +78,11 @@ public class AutoresController {
      * Obtiene todos los autores.
      * @return La lista de autores.
      */
+    @Operation(summary = "Listar autores", description = "Obtiene la lista de todos los autores registrados")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Lista de autores obtenida correctamente",
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = AutoresResponse.class))))
+    })
     @GetMapping()
     public List<AutoresResponse> getAllAutores() {
         var autores = getAllAutoresCase.findAll();

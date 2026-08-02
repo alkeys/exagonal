@@ -21,6 +21,15 @@ import com.exagonal001.user.controller.dto.UserResponse;
 import com.exagonal001.user.domain.models.User;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 
 /**
  * Controlador REST del slice de usuarios.
@@ -30,6 +39,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  */
 @RestController
 @RequestMapping("/user")
+@Tag(name = "Usuarios", description = "Operaciones para la gestion de usuarios")
 public class UserController {
 
     private final CreateUserCase createUserCase;
@@ -57,6 +67,12 @@ public class UserController {
      * @param userRequest datos de entrada del usuario
      * @return usuario creado
      */
+    @Operation(summary = "Crear un usuario", description = "Registra un nuevo usuario en el sistema")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Usuario creado correctamente",
+                    content = @Content(schema = @Schema(implementation = UserResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Datos de entrada invalidos", content = @Content())
+    })
     @PostMapping
     public UserResponse createUser(@RequestBody UserRequest userRequest) {
         final User user = new User(null, userRequest.nombre(), userRequest.apellido(),userRequest.email(), userRequest.rol(), userRequest.password());
@@ -69,6 +85,11 @@ public class UserController {
      *
      * @return lista de respuestas de usuarios
      */
+    @Operation(summary = "Listar usuarios", description = "Obtiene la lista de todos los usuarios registrados")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Lista de usuarios obtenida correctamente",
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = UserResponse.class))))
+    })
     @GetMapping
     public List<UserResponse> getAllUsers() {
         return getAllUserCase.getAllUsers();
@@ -82,8 +103,14 @@ public class UserController {
      * @param param parámetro de consulta
      * @return una cadena de texto
      */
+    @Operation(summary = "Obtener un usuario por ID", description = "Busca un usuario segun su identificador")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Usuario encontrado",
+                    content = @Content(schema = @Schema(implementation = UserResponse.class))),
+            @ApiResponse(responseCode = "404", description = "Usuario no encontrado", content = @Content())
+    })
     @GetMapping("getUserById/{id}")
-    public UserResponse getMethodName(@RequestParam String param) {
+    public UserResponse getMethodName(@Parameter(description = "Identificador del usuario") @RequestParam String param) {
         return getUserCase.getUserById(param);
     }
 
@@ -95,8 +122,16 @@ public class UserController {
      * @param nombre nombre del usuario
      * @param apellido apellido del usuario
      */
+    @Operation(summary = "Actualizar un usuario", description = "Actualiza el nombre y apellido de un usuario existente")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Usuario actualizado correctamente"),
+            @ApiResponse(responseCode = "404", description = "Usuario no encontrado", content = @Content())
+    })
     @PutMapping("updateUser/{id}")
-    public void updateUser(@PathVariable String id, @RequestParam String nombre, @RequestParam String apellido) {
+    public void updateUser(
+            @Parameter(description = "Identificador del usuario") @PathVariable String id,
+            @Parameter(description = "Nuevo nombre del usuario") @RequestParam String nombre,
+            @Parameter(description = "Nuevo apellido del usuario") @RequestParam String apellido) {
         updateUserCase.updateUser(id, nombre, apellido);
     }
 

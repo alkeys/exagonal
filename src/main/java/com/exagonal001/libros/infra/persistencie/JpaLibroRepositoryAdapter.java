@@ -23,9 +23,10 @@ public class JpaLibroRepositoryAdapter implements LibroRepositoryPort {
     public Libro save(Libro libro) {
         AutoresEntity autorEntity = new AutoresEntity();
         autorEntity.setId(UUID.fromString(libro.Idautor()));
-        LibroEntity libroEntity = new LibroEntity(libro.id(), libro.titulo(), autorEntity, libro.anio().getAnio());
+        LibroEntity libroEntity = new LibroEntity(libro.id(), libro.titulo(), autorEntity, libro.anio().getAnio(), libro.url());
         LibroEntity savedEntity = springDataLibroRepository.save(libroEntity);
-        return new Libro(savedEntity.getId(), savedEntity.getTitulo(), savedEntity.getIdautor().getId().toString(), new AnioPublicacion(savedEntity.getAnioPublicacion()));
+        return new Libro(savedEntity.getId(), savedEntity.getTitulo(), savedEntity.getIdautor().getId().toString(),
+         new AnioPublicacion(savedEntity.getAnioPublicacion()), savedEntity.getUrl());
 
     }
 

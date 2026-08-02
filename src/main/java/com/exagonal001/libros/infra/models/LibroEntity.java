@@ -33,5 +33,6 @@ public class LibroEntity {
     @JoinColumn(name = "id_autor", referencedColumnName = "id")
     private AutoresEntity idautor;
     private int anioPublicacion;
+    private String url;
     
 }

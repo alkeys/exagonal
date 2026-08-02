@@ -6,7 +6,8 @@ public record Libro(
     UUID id,
     String titulo,
     String Idautor,
-    AnioPublicacion anio
+    AnioPublicacion anio,   
+    String url
 ) {
     public Libro {
         if (titulo == null || titulo.isBlank()) {

@@ -1,5 +1,7 @@
 package com.exagonal001.user.controller.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 /**
  * DTO de entrada para crear un usuario desde la API.
  *
@@ -7,11 +9,17 @@ package com.exagonal001.user.controller.dto;
  * @param apellido apellido recibido en el request
  * @param email email recibido en el request
  */
+@Schema(description = "Datos necesarios para registrar un usuario")
 public record UserRequest(
+    @Schema(description = "Nombre del usuario", example = "Alex")
     String nombre,
+    @Schema(description = "Apellido del usuario", example = "Aviles")
     String apellido,
+    @Schema(description = "Correo electronico del usuario", example = "alex@example.com")
     String email,
+    @Schema(description = "Rol asignado al usuario", example = "ADMIN")
     String rol,
+    @Schema(description = "Contraseña del usuario", example = "P@ssw0rd123")
     String password
 ) {
 }

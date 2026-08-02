@@ -15,12 +15,20 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 
 
 @RestController
 @RequestMapping("/prestamos")
+@Tag(name = "Prestamos", description = "Operaciones para la gestion de prestamos de libros")
 public class PrestamoController {
-    
+
     private final CreatePrestamoCase createPrestamoCase;
 
     public PrestamoController(CreatePrestamoCase createPrestamoCase) {
@@ -32,6 +40,12 @@ public class PrestamoController {
      * @param prestamo los datos del prestamo a crear
      * @return el prestamo creado
      */
+    @Operation(summary = "Crear un prestamo", description = "Registra el prestamo de un libro a un usuario")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Prestamo creado correctamente",
+                    content = @Content(schema = @Schema(implementation = PrestamoResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Datos de entrada invalidos", content = @Content())
+    })
     @PostMapping("")
     public PrestamoResponse createPrestamo(@RequestBody PrestamoRequest prestamo) {
         var prestamoDomain = new PrestamosLibros(
