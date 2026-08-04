@@ -6,7 +6,7 @@ public record LibroRequest(
     //documentation swagger
     @Schema(description = "Titulo del libro", example = "El Quijote")
     String titulo,
-    @Schema(description = "Autor del libro", example = "Miguel de Cervantes")
+    @Schema(description = "Autor del libro", example = "UUID del autor")
     String autor,
     @Schema(description = "Año de publicación del libro", example = "1605")
     int anio,

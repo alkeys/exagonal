@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import com.exagonal001.autores.application.port.in.CreateAutoresCase;
+import com.exagonal001.autores.application.port.in.GetByidAutoresCase;
 import com.exagonal001.autores.application.port.in.GetallAutoresCase;
 import com.exagonal001.autores.controller.dto.AutoresRequest;
 import com.exagonal001.autores.controller.dto.AutoresResponse;
@@ -19,6 +20,7 @@ import com.exagonal001.autores.domain.models.values.Nombre;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -29,7 +31,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
-
 @RestController
 @RequestMapping("/autores")
 @Tag(name = "Autores", description = "Operaciones para la gestion de autores")
@@ -37,56 +38,57 @@ public class AutoresController {
 
     private final CreateAutoresCase createAutorCase;
     private final GetallAutoresCase getAllAutoresCase;
+    private final GetByidAutoresCase getByIdAutoresCase;
 
-    public AutoresController(CreateAutoresCase createAutorCase, GetallAutoresCase getAllAutoresCase) {
+    public AutoresController(CreateAutoresCase createAutorCase, GetallAutoresCase getAllAutoresCase,
+            GetByidAutoresCase getByIdAutoresCase) {
         this.createAutorCase = createAutorCase;
         this.getAllAutoresCase = getAllAutoresCase;
+        this.getByIdAutoresCase = getByIdAutoresCase;
     }
 
     /**
      * Crea un nuevo autor.
+     * 
      * @param autor El autor a crear.
      * @return El autor creado.
      */
     @Operation(summary = "Crear un autor", description = "Registra un nuevo autor en el sistema")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Autor creado correctamente",
-                    content = @Content(schema = @Schema(implementation = AutoresResponse.class))),
+            @ApiResponse(responseCode = "200", description = "Autor creado correctamente", content = @Content(schema = @Schema(implementation = AutoresResponse.class))),
             @ApiResponse(responseCode = "400", description = "Datos de entrada invalidos", content = @Content())
     })
-    
+
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public AutoresResponse createAutor(@RequestBody AutoresRequest autor) {
         var autorDomain = new Autore(
-            null,
-            new Nombre(autor.nombre()),
-            new Apellido(autor.apellido()),
-            new Nacionalidad(autor.nacionalidad()),
-            new Fecha (autor.anioNacimiento()),
-            new Fecha(autor.anioFallecimiento())
-        );
+                null,
+                new Nombre(autor.nombre()),
+                new Apellido(autor.apellido()),
+                new Nacionalidad(autor.nacionalidad()),
+                new Fecha(autor.anioNacimiento()),
+                new Fecha(autor.anioFallecimiento()));
         var createdAutor = createAutorCase.createAutores(autorDomain);
         return new AutoresResponse(
-            createdAutor.id().toString(),
-            createdAutor.nombre().getNombre(),
-            createdAutor.apellido().getApellido(),
-            createdAutor.nacionalidad().getNacionalidad(),
-            createdAutor.fechaNacimiento().getFecha(),
-            createdAutor.fechaFallecimiento().getFecha()
-        );
+                createdAutor.id().toString(),
+                createdAutor.nombre().getNombre(),
+                createdAutor.apellido().getApellido(),
+                createdAutor.nacionalidad().getNacionalidad(),
+                createdAutor.fechaNacimiento().getFecha(),
+                createdAutor.fechaFallecimiento().getFecha());
     }
 
     /**
      * Obtiene todos los autores.
+     * 
      * @return La lista de autores.
      */
     @Operation(summary = "Listar autores", description = "Obtiene la lista de todos los autores registrados")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Lista de autores obtenida correctamente",
-                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = AutoresResponse.class))))
+            @ApiResponse(responseCode = "200", description = "Lista de autores obtenida correctamente", content = @Content(array = @ArraySchema(schema = @Schema(implementation = AutoresResponse.class))))
     })
-        @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("isAuthenticated()")
     @GetMapping()
     public List<AutoresResponse> getAllAutores() {
         var autores = getAllAutoresCase.findAll();
@@ -97,10 +99,25 @@ public class AutoresController {
                         autor.apellido().getApellido(),
                         autor.nacionalidad().getNacionalidad(),
                         autor.fechaNacimiento().getFecha(),
-                        autor.fechaFallecimiento().getFecha()
-                ))
+                        autor.fechaFallecimiento().getFecha()))
                 .toList();
     }
-    
-    
+
+    /**
+     * Obtiene un autor por su ID.
+     * 
+     * @param id El ID del autor a obtener.
+     * @return El autor encontrado.
+     */
+    @Operation(summary = "Obtener un autor por ID", description = "Obtiene un autor específico por su ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Autor obtenido correctamente", content = @Content(schema = @Schema(implementation = AutoresResponse.class))),
+            @ApiResponse(responseCode = "404", description = "Autor no encontrado", content = @Content())
+    })
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/{id}")
+    public AutoresResponse getById(@PathVariable String id) {
+        return getByIdAutoresCase.getById(id);
+    }
+
 }

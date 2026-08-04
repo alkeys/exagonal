@@ -1,10 +1,12 @@
 package com.exagonal001.autores.infra.persistencie;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.stereotype.Repository;
 
 import com.exagonal001.autores.application.port.out.AutoresRepositoryPort;
+import com.exagonal001.autores.controller.dto.AutoresResponse;
 import com.exagonal001.autores.domain.models.Autore;
 import com.exagonal001.autores.domain.models.values.Apellido;
 import com.exagonal001.autores.domain.models.values.Fecha;
@@ -54,5 +56,20 @@ public class JpaAutoresRepositoryAdapter implements AutoresRepositoryPort {
                         new Fecha( entity.getFechaFallecimiento() )
                 ))
                 .toList();
+    }
+
+    @Override
+    public AutoresResponse findById(String id) {
+        AutoresEntity autoresEntity = springDataAutoresRepository.findById(UUID.fromString(id))
+                .orElseThrow(() -> new RuntimeException("Autor no encontrado con id: " + id));
+        return new AutoresResponse(
+            autoresEntity.getId().toString(),
+            autoresEntity.getNombre(),
+            autoresEntity.getApellido(),
+            autoresEntity.getNacionalidad(),
+            autoresEntity.getFechaNacimiento(),
+            autoresEntity.getFechaFallecimiento()
+
+        );
     }
 }

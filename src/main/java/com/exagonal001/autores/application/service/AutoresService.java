@@ -5,12 +5,14 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.exagonal001.autores.application.port.in.CreateAutoresCase;
+import com.exagonal001.autores.application.port.in.GetByidAutoresCase;
 import com.exagonal001.autores.application.port.in.GetallAutoresCase;
 import com.exagonal001.autores.application.port.out.AutoresRepositoryPort;
+import com.exagonal001.autores.controller.dto.AutoresResponse;
 import com.exagonal001.autores.domain.models.Autore;
 
 @Service
-public class AutoresService implements CreateAutoresCase, GetallAutoresCase {
+public class AutoresService implements CreateAutoresCase, GetallAutoresCase, GetByidAutoresCase {
 
     private final AutoresRepositoryPort autoresRepositoryPort;
 
@@ -28,4 +30,8 @@ public class AutoresService implements CreateAutoresCase, GetallAutoresCase {
         return autoresRepositoryPort.findAll();
     }
 
+    @Override
+    public AutoresResponse getById(String id) {
+        return autoresRepositoryPort.findById(id);
+    }
 }
