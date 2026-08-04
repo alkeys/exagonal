@@ -1,14 +1,11 @@
 package com.exagonal001.user.infra.persistence;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.stereotype.Repository;
 
 import com.exagonal001.user.application.port.out.UserRepositoryPort;
-import com.exagonal001.user.controller.dto.UserRequest;
-import com.exagonal001.user.controller.dto.UserResponse;
 import com.exagonal001.user.domain.models.User;
 import com.exagonal001.user.infra.models.UserEntity;
 
@@ -36,10 +33,10 @@ public class JpaUserRepositoryAdapter implements UserRepositoryPort {
      * @return usuario persistido con su identificador generado
      */
     @Override
-    public Optional<UserResponse> save(UserRequest user) {
+    public User save(User user) {
         UserEntity userEntity = new UserEntity(null, user.nombre(), user.apellido(), user.email(), user.rol(), user.password());
         UserEntity savedUser = springDataUserRepository.save(userEntity);
-        return Optional.of(new UserResponse(savedUser.getId(), savedUser.getNombre(), savedUser.getApellido(), savedUser.getEmail(), savedUser.getRol()));
+        return toDomain(savedUser);
     }
 
     /**
@@ -48,9 +45,9 @@ public class JpaUserRepositoryAdapter implements UserRepositoryPort {
      * @return lista de usuarios mapeados al dominio
      */
     @Override
-    public List<UserResponse> getAllUsers() {
+    public List<User> getAllUsers() {
         return springDataUserRepository.findAll().stream()
-                .map(userEntity -> new UserResponse(userEntity.getId(), userEntity.getNombre(), userEntity.getApellido(), userEntity.getEmail(), userEntity.getRol()))
+                .map(this::toDomain)
                 .toList();
     }
 
@@ -61,10 +58,10 @@ public class JpaUserRepositoryAdapter implements UserRepositoryPort {
      * @return usuario encontrado o Optional.empty() si no se encuentra
      */
     @Override
-    public UserResponse getUserById(String id) {
+    public User getUserById(String id) {
         return springDataUserRepository.findById(UUID.fromString(id))
-                .map(userEntity -> new UserResponse(userEntity.getId(), userEntity.getNombre(), userEntity.getApellido(), userEntity.getEmail(), userEntity.getRol()))
-                .orElse(null);
+                .map(this::toDomain)
+                .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
     /**
@@ -86,6 +83,16 @@ public class JpaUserRepositoryAdapter implements UserRepositoryPort {
 
     public boolean existsByRol(String rol) {
         return springDataUserRepository.existsByRol(rol);
+    }
+
+    private User toDomain(UserEntity userEntity) {
+        return new User(
+                userEntity.getId(),
+                userEntity.getNombre(),
+                userEntity.getApellido(),
+                userEntity.getEmail(),
+                userEntity.getRol(),
+                userEntity.getPassword());
     }
 
 }

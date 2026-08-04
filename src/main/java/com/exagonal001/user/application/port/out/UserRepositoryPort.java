@@ -1,11 +1,7 @@
 package com.exagonal001.user.application.port.out;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 
-import com.exagonal001.user.controller.dto.UserRequest;
-import com.exagonal001.user.controller.dto.UserResponse;
 import com.exagonal001.user.domain.models.User;
 
 /**
@@ -19,14 +15,14 @@ public interface UserRepositoryPort {
      * @param user usuario a persistir
      * @return usuario persistido con su identificador asignado
      */
-    Optional<UserResponse> save(UserRequest user);
+    User save(User user);
 
     /**
      * Recupera todos los usuarios almacenados.
      *
      * @return lista completa de usuarios
      */
-    List<UserResponse> getAllUsers();
+    List<User> getAllUsers();
 
     /**
      * Recupera un usuario por su identificador.
@@ -34,7 +30,7 @@ public interface UserRepositoryPort {
      * @param id identificador del usuario
      * @return usuario encontrado o Optional.empty() si no se encuentra
      */
-    UserResponse getUserById(String id);
+    User getUserById(String id);
 
     /**
      * Actualiza un usuario por su identificador.

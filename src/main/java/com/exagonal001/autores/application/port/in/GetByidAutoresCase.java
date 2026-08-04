@@ -1,7 +1,7 @@
 package com.exagonal001.autores.application.port.in;
 
-import com.exagonal001.autores.controller.dto.AutoresResponse;
+import com.exagonal001.autores.domain.models.Autore;
 
 public interface GetByidAutoresCase {
-    AutoresResponse getById(String id);
+    Autore getById(String id);
 }

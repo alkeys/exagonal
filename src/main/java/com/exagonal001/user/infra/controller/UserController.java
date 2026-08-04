@@ -1,8 +1,6 @@
 package com.exagonal001.user.infra.controller;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -77,8 +75,8 @@ public class UserController {
     })
     @PostMapping
     public UserResponse createUser(@RequestBody UserRequest userRequest) {
-        final Optional<UserResponse> createdUser = createUserCase.createUser(userRequest);
-        return createdUser.orElse(null);
+        User createdUser = createUserCase.createUser(toDomain(userRequest));
+        return toResponse(createdUser);
     }
 
     /**
@@ -93,7 +91,9 @@ public class UserController {
     })
     @GetMapping
     public List<UserResponse> getAllUsers() {
-        return getAllUserCase.getAllUsers();
+        return getAllUserCase.getAllUsers().stream()
+            .map(this::toResponse)
+            .toList();
     }
 
 
@@ -111,8 +111,8 @@ public class UserController {
             @ApiResponse(responseCode = "404", description = "Usuario no encontrado", content = @Content())
     })
     @GetMapping("getUserById/{id}")
-    public UserResponse getMethodName(@Parameter(description = "Identificador del usuario") @RequestParam String param) {
-        return getUserCase.getUserById(param);
+    public UserResponse getMethodName(@Parameter(description = "Identificador del usuario") @PathVariable String id) {
+        return toResponse(getUserCase.getUserById(id));
     }
 
 
@@ -134,6 +134,14 @@ public class UserController {
             @Parameter(description = "Nuevo nombre del usuario") @RequestParam String nombre,
             @Parameter(description = "Nuevo apellido del usuario") @RequestParam String apellido) {
         updateUserCase.updateUser(id, nombre, apellido);
+    }
+
+    private User toDomain(UserRequest request) {
+        return new User(null, request.nombre(), request.apellido(), request.email(), request.rol(), request.password());
+    }
+
+    private UserResponse toResponse(User user) {
+        return new UserResponse(user.id(), user.nombre(), user.apellido(), user.email(), user.rol());
     }
 
 }

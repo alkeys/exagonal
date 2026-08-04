@@ -6,10 +6,7 @@ import java.util.UUID;
 import org.springframework.stereotype.Repository;
 
 import com.exagonal001.autores.infra.models.AutoresEntity;
-import com.exagonal001.autores.infra.persistencie.SpringDataAutoresRepository;
 import com.exagonal001.libros.application.port.out.LibroRepositoryPort;
-import com.exagonal001.libros.controller.dto.LibroRequest;
-import com.exagonal001.libros.controller.dto.LibroResponse;
 import com.exagonal001.libros.domain.models.AnioPublicacion;
 import com.exagonal001.libros.domain.models.Libro;
 import com.exagonal001.libros.infra.models.LibroEntity;
@@ -24,51 +21,41 @@ public class JpaLibroRepositoryAdapter implements LibroRepositoryPort {
     }
 
     @Override
-    public LibroResponse save(LibroRequest libro) {
-        // Crear la entidad de autor
+    public Libro save(Libro libro) {
         AutoresEntity autorEntity = new AutoresEntity();
-        autorEntity.setId(UUID.fromString(libro.autor()));
+        autorEntity.setId(UUID.fromString(libro.Idautor()));
         LibroEntity libroEntity = new LibroEntity();
         libroEntity.setTitulo(libro.titulo());
-        libroEntity.setAnioPublicacion(libro.anio());
+        libroEntity.setAnioPublicacion(libro.anio().getAnio());
         libroEntity.setUrl(libro.url());
         libroEntity.setIdautor(autorEntity);
         LibroEntity savedLibro = springDataLibroRepository.save(libroEntity);
-        return new LibroResponse(
-            savedLibro.getId().toString(),
-            savedLibro.getTitulo(),
-            savedLibro.getIdautor().getId().toString(),
-            savedLibro.getAnioPublicacion(),
-            savedLibro.getUrl()
-        );
-        
+        return toDomain(savedLibro);
     }
 
 
     @Override
-    public List<LibroResponse> findAll() {
+    public List<Libro> findAll() {
         List<LibroEntity> libros = springDataLibroRepository.findAll();
         return libros.stream()
-                .map(libro -> new LibroResponse(
-                        libro.getId().toString(),
-                        libro.getTitulo(),
-                        libro.getIdautor().getId().toString(),
-                        libro.getAnioPublicacion(), 
-                        libro.getUrl()
-                ))
+                .map(this::toDomain)
                 .toList();
     } 
 
     @Override
-    public LibroResponse findById(String id) {
+    public Libro findById(String id) {
         LibroEntity libro = springDataLibroRepository.findById(UUID.fromString(id))
                 .orElseThrow(() -> new RuntimeException("Libro no encontrado con id: " + id));
-        return new LibroResponse(
-                libro.getId().toString(),
-                libro.getTitulo(),
-                libro.getIdautor().getId().toString(),
-                libro.getAnioPublicacion(),
-                libro.getUrl()
+        return toDomain(libro);
+    }
+
+    private Libro toDomain(LibroEntity libroEntity) {
+        return new Libro(
+                libroEntity.getId(),
+                libroEntity.getTitulo(),
+                libroEntity.getIdautor().getId().toString(),
+                new AnioPublicacion(libroEntity.getAnioPublicacion()),
+                libroEntity.getUrl()
         );
     }
 

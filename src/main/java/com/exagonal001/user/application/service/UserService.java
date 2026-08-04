@@ -1,7 +1,6 @@
 package com.exagonal001.user.application.service;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -11,8 +10,6 @@ import com.exagonal001.user.application.port.in.GetAllUserCase;
 import com.exagonal001.user.application.port.in.GetUserCase;
 import com.exagonal001.user.application.port.in.UpdateUserCase;
 import com.exagonal001.user.application.port.out.UserRepositoryPort;
-import com.exagonal001.user.controller.dto.UserRequest;
-import com.exagonal001.user.controller.dto.UserResponse;
 import com.exagonal001.user.domain.models.User;
 
 /**
@@ -46,11 +43,16 @@ public class UserService implements CreateUserCase, GetAllUserCase, GetUserCase,
      * @return usuario persistido, si la operación fue exitosa
      */
     @Override
-    public Optional<UserResponse> createUser(UserRequest user) {
+    public User createUser(User user) {
         String encodedPassword = passwordEncoder.encode(user.password());
-        UserRequest userWithEncodedPassword = new UserRequest(user.nombre(), user.apellido(), user.email(), user.rol(), encodedPassword);
-        UserResponse savedUser = userRepositoryPort.save(userWithEncodedPassword).orElse(null);
-        return Optional.ofNullable(savedUser);
+        User userWithEncodedPassword = new User(
+                null,
+                user.nombre(),
+                user.apellido(),
+                user.email(),
+                user.rol(),
+                encodedPassword);
+        return userRepositoryPort.save(userWithEncodedPassword);
     }
 
     /**
@@ -59,7 +61,7 @@ public class UserService implements CreateUserCase, GetAllUserCase, GetUserCase,
      * @return lista de usuarios existentes
      */
     @Override
-    public List<UserResponse> getAllUsers() {
+    public List<User> getAllUsers() {
         return userRepositoryPort.getAllUsers();
     }
 
@@ -71,12 +73,8 @@ public class UserService implements CreateUserCase, GetAllUserCase, GetUserCase,
      * @return usuario encontrado o Optional.empty() si no se encuentra
      */
     @Override
-    public UserResponse getUserById(String id) {
-        UserResponse user2 = userRepositoryPort.getUserById(id);
-        if (user2 != null) {
-            return new UserResponse(user2.id(), user2.nombre(), user2.apellido(),user2.email(), user2.rol());
-        }
-        return null;
+    public User getUserById(String id) {
+        return userRepositoryPort.getUserById(id);
     }
 
     /**
