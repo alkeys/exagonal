@@ -3,6 +3,8 @@ package com.exagonal001.security;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import org.springframework.http.ResponseCookie;
+
 import com.exagonal001.user.controller.dto.UserRequest;
 import com.exagonal001.user.controller.dto.UserResponse;
 import com.exagonal001.user.infra.models.UserEntity;
@@ -21,7 +23,7 @@ public class AuthService {
         this.jwtService = jwtService;
     }
 
-    public AuthResponse login(LoginRequest request) {
+    public AuthResult login(LoginRequest request) {
         UserEntity user = userRepository.findByEmail(request.email())
                 .orElseThrow(() -> new IllegalArgumentException("Usuario o contraseña invalidos"));
 
@@ -30,8 +32,10 @@ public class AuthService {
         }
 
         String token = jwtService.generateToken(user.getId(), user.getEmail(), user.getRol());
-        return new AuthResponse(token, jwtService.getExpirationMs(), user.getRol(), new UserResponse(
+        AuthResponse response = new AuthResponse(token, jwtService.getExpirationMs(), user.getRol(), new UserResponse(
                 user.getId(), user.getNombre(), user.getApellido(), user.getEmail(), user.getRol()));
+        ResponseCookie cookie = jwtService.createAuthCookie(token);
+        return new AuthResult(response, cookie);
     }
 
     public UserResponse registerUser(UserRequest request) {
@@ -55,5 +59,12 @@ public class AuthService {
     }
 
     public record AuthResponse(String token, long expiresInMs, String role, UserResponse user) {
+    }
+
+    public record AuthResult(AuthResponse response, ResponseCookie cookie) {
+    }
+
+    public ResponseCookie logoutCookie() {
+        return jwtService.createLogoutCookie();
     }
 }

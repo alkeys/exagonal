@@ -5,9 +5,11 @@ import java.util.Date;
 import java.util.Map;
 import java.util.UUID;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 import javax.crypto.SecretKey;
 
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
@@ -20,14 +22,22 @@ import io.jsonwebtoken.security.Keys;
 @Service
 public class JwtService {
 
+    private static final String BEARER_PREFIX = "Bearer ";
+
     private final SecretKey signingKey;
     private final long expirationMs;
+    private final String cookieName;
+    private final String cookiePath;
+    private final boolean cookieSecure;
+    private final String cookieSameSite;
 
-    public JwtService(
-            @Value("${app.jwt.secret}") String secret,
-            @Value("${app.jwt.expiration-ms}") long expirationMs) {
-        this.signingKey = createKey(secret);
-        this.expirationMs = expirationMs;
+    public JwtService(JwtProperties jwtProperties) {
+        this.signingKey = createKey(jwtProperties.secret());
+        this.expirationMs = jwtProperties.expirationMs();
+        this.cookieName = jwtProperties.cookieName() == null || jwtProperties.cookieName().isBlank() ? "jwt" : jwtProperties.cookieName();
+        this.cookiePath = jwtProperties.cookiePath() == null || jwtProperties.cookiePath().isBlank() ? "/" : jwtProperties.cookiePath();
+        this.cookieSecure = jwtProperties.cookieSecure();
+        this.cookieSameSite = jwtProperties.cookieSameSite() == null || jwtProperties.cookieSameSite().isBlank() ? "Lax" : jwtProperties.cookieSameSite();
     }
 
     public String generateToken(UUID userId, String email, String role) {
@@ -68,6 +78,45 @@ public class JwtService {
 
     public long getExpirationMs() {
         return expirationMs;
+    }
+
+    public String resolveToken(HttpServletRequest request) {
+        String header = request.getHeader("Authorization");
+        if (header != null && header.startsWith(BEARER_PREFIX)) {
+            return header.substring(BEARER_PREFIX.length());
+        }
+
+        if (request.getCookies() == null) {
+            return null;
+        }
+
+        for (var cookie : request.getCookies()) {
+            if (cookieName.equals(cookie.getName())) {
+                return cookie.getValue();
+            }
+        }
+
+        return null;
+    }
+
+    public ResponseCookie createAuthCookie(String token) {
+        return ResponseCookie.from(cookieName, token)
+                .httpOnly(true)
+                .secure(cookieSecure)
+                .path(cookiePath)
+                .sameSite(cookieSameSite)
+                .maxAge(expirationMs / 1000)
+                .build();
+    }
+
+    public ResponseCookie createLogoutCookie() {
+        return ResponseCookie.from(cookieName, "")
+                .httpOnly(true)
+                .secure(cookieSecure)
+                .path(cookiePath)
+                .sameSite(cookieSameSite)
+                .maxAge(0)
+                .build();
     }
 
     private Claims getClaims(String token) {

@@ -1,6 +1,8 @@
 package com.exagonal001.security;
 
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,8 +22,11 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public AuthService.AuthResponse login(@RequestBody AuthService.LoginRequest request) {
-        return authService.login(request);
+    public ResponseEntity<AuthService.AuthResponse> login(@RequestBody AuthService.LoginRequest request) {
+        AuthService.AuthResult result = authService.login(request);
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, result.cookie().toString())
+                .body(result.response());
     }
 
     @PostMapping("/register")
@@ -36,5 +41,12 @@ public class AuthController {
     public UserResponse registerAdmin(@RequestBody UserRequest request) {
         String role = request.rol() == null || request.rol().isBlank() ? "USER" : request.rol();
         return authService.registerWithRole(request, role);
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout() {
+        return ResponseEntity.noContent()
+                .header(HttpHeaders.SET_COOKIE, authService.logoutCookie().toString())
+                .build();
     }
 }
