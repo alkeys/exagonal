@@ -1,7 +1,7 @@
 package com.exagonal001.libros.application.port.in;
 
-import com.exagonal001.libros.controller.dto.LibroResponse;
+import com.exagonal001.libros.domain.models.Libro;
 
 public interface GetByidLibreCase {
-    LibroResponse getById(String id);
+    Libro getById(String id);
 }

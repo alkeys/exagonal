@@ -8,7 +8,6 @@ import com.exagonal001.autores.application.port.in.CreateAutoresCase;
 import com.exagonal001.autores.application.port.in.GetByidAutoresCase;
 import com.exagonal001.autores.application.port.in.GetallAutoresCase;
 import com.exagonal001.autores.application.port.out.AutoresRepositoryPort;
-import com.exagonal001.autores.controller.dto.AutoresRequest;
 import com.exagonal001.autores.domain.models.Autore;
 
 @Service
@@ -34,7 +33,4 @@ public class AutoresService implements CreateAutoresCase, GetallAutoresCase, Get
     public Autore getById(String id) {
         return autoresRepositoryPort.findById(id);
     }
-
-
-
 }

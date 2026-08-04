@@ -5,60 +5,68 @@ import org.springframework.stereotype.Service;
 
 import org.springframework.http.ResponseCookie;
 
-import com.exagonal001.user.controller.dto.UserRequest;
-import com.exagonal001.user.controller.dto.UserResponse;
-import com.exagonal001.user.infra.models.UserEntity;
-import com.exagonal001.user.infra.persistence.SpringDataUserRepository;
+import com.exagonal001.user.application.port.out.UserRepositoryPort;
+import com.exagonal001.user.domain.models.User;
 
 @Service
 public class AuthService {
 
-    private final SpringDataUserRepository userRepository;
+    private final UserRepositoryPort userRepositoryPort;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
 
-    public AuthService(SpringDataUserRepository userRepository, PasswordEncoder passwordEncoder, JwtService jwtService) {
-        this.userRepository = userRepository;
+    public AuthService(UserRepositoryPort userRepositoryPort, PasswordEncoder passwordEncoder, JwtService jwtService) {
+        this.userRepositoryPort = userRepositoryPort;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
     }
 
     public AuthResult login(LoginRequest request) {
-        UserEntity user = userRepository.findByEmail(request.email())
-                .orElseThrow(() -> new IllegalArgumentException("Usuario o contraseña invalidos"));
+        User user = userRepositoryPort.findByEmail(request.email());
 
-        if (!passwordEncoder.matches(request.password(), user.getPassword())) {
+        if (!passwordEncoder.matches(request.password(), user.password())) {
             throw new IllegalArgumentException("Usuario o contraseña invalidos");
         }
 
-        String token = jwtService.generateToken(user.getId(), user.getEmail(), user.getRol());
-        AuthResponse response = new AuthResponse(token, jwtService.getExpirationMs(), user.getRol(), new UserResponse(
-                user.getId(), user.getNombre(), user.getApellido(), user.getEmail(), user.getRol()));
+        String token = jwtService.generateToken(user.id(), user.email(), user.rol());
+        AuthResponse response = new AuthResponse(
+                token,
+                jwtService.getExpirationMs(),
+                user.rol(),
+                new UserPayload(
+                        user.id() != null ? user.id().toString() : null,
+                        user.nombre(),
+                        user.apellido(),
+                        user.email(),
+                        user.rol()));
         ResponseCookie cookie = jwtService.createAuthCookie(token);
         return new AuthResult(response, cookie);
     }
 
-    public UserResponse registerUser(UserRequest request) {
+    public User registerUser(User request) {
         return registerWithRole(request, "USER");
     }
 
-    public UserResponse registerWithRole(UserRequest request, String role) {
+    public User registerWithRole(User request, String role) {
         String encodedPassword = passwordEncoder.encode(request.password());
-        UserEntity savedUser = userRepository.save(new UserEntity(
+        User userToSave = new User(
                 null,
                 request.nombre(),
                 request.apellido(),
                 request.email(),
                 role,
-                encodedPassword));
+                encodedPassword);
 
-        return new UserResponse(savedUser.getId(), savedUser.getNombre(), savedUser.getApellido(), savedUser.getEmail(), savedUser.getRol());
+        return userRepositoryPort.save(userToSave);
     }
 
     public record LoginRequest(String email, String password) {
     }
 
-    public record AuthResponse(String token, long expiresInMs, String role, UserResponse user) {
+    public record UserPayload(String id, String nombre, String apellido, String email, String rol) {
+    }
+
+    public record AuthResponse(String token, long expiresInMs, String role, UserPayload user) {
     }
 
     public record AuthResult(AuthResponse response, ResponseCookie cookie) {

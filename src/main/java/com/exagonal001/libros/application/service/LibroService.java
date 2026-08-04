@@ -8,9 +8,6 @@ import com.exagonal001.libros.application.port.in.CreateLibroCase;
 import com.exagonal001.libros.application.port.in.GetAllLibroCase;
 import com.exagonal001.libros.application.port.in.GetByidLibreCase;
 import com.exagonal001.libros.application.port.out.LibroRepositoryPort;
-import com.exagonal001.libros.controller.dto.LibroRequest;
-import com.exagonal001.libros.controller.dto.LibroResponse;
-import com.exagonal001.libros.domain.models.AnioPublicacion;
 import com.exagonal001.libros.domain.models.Libro;
 
 @Service
@@ -23,40 +20,17 @@ public class LibroService implements CreateLibroCase , GetAllLibroCase, GetByidL
     }
 
     @Override
-    public LibroResponse createLibro(LibroRequest libro) {
-        Libro savedLibro = libroRepositoryPort.save(toDomain(libro));
-        return toResponse(savedLibro);
+    public Libro createLibro(Libro libro) {
+        return libroRepositoryPort.save(libro);
     }
 
     @Override
-    public List<LibroResponse> getAllLibros(){
-        return libroRepositoryPort.findAll().stream()
-                .map(this::toResponse)
-                .toList();
+    public List<Libro> getAllLibros(){
+        return libroRepositoryPort.findAll();
     }
 
     @Override
-    public LibroResponse getById(String id) {
-        return toResponse(libroRepositoryPort.findById(id));
-    }
-
-    private Libro toDomain(LibroRequest libro) {
-        return new Libro(
-                null,
-                libro.titulo(),
-                libro.autor(),
-                new AnioPublicacion(libro.anio()),
-                libro.url()
-        );
-    }
-
-    private LibroResponse toResponse(Libro libro) {
-        return new LibroResponse(
-                libro.id() != null ? libro.id().toString() : null,
-                libro.titulo(),
-                libro.Idautor(),
-            libro.anio().getAnio(),
-                libro.url()
-        );
+    public Libro getById(String id) {
+        return libroRepositoryPort.findById(id);
     }
 }

@@ -1,7 +1,5 @@
 package com.exagonal001.autores.domain.models.values;
 
-import java.io.FileReader;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;

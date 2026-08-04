@@ -33,6 +33,14 @@ public interface UserRepositoryPort {
     User getUserById(String id);
 
     /**
+     * Recupera un usuario por su correo electrónico.
+     *
+     * @param email correo del usuario
+     * @return usuario encontrado
+     */
+    User findByEmail(String email);
+
+    /**
      * Actualiza un usuario por su identificador.
      *
      * @param id identificador del usuario

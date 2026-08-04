@@ -64,6 +64,13 @@ public class JpaUserRepositoryAdapter implements UserRepositoryPort {
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
+    @Override
+    public User findByEmail(String email) {
+        return springDataUserRepository.findByEmail(email)
+                .map(this::toDomain)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+    }
+
     /**
      * Actualiza un usuario por su identificador.
      *

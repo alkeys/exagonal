@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.exagonal001.user.controller.dto.UserRequest;
 import com.exagonal001.user.controller.dto.UserResponse;
+import com.exagonal001.user.domain.models.User;
 
 @RestController
 @RequestMapping("/auth")
@@ -33,14 +34,16 @@ public class AuthController {
     public UserResponse register(@RequestBody UserRequest request) {
         //solo registro de usuario 
         request =new UserRequest(request.nombre(), request.apellido(), request.email(), "USER", request.password());
-        return authService.registerUser(request);
+        User created = authService.registerUser(toDomain(request));
+        return toResponse(created);
     }
 
     @PostMapping("/admin/register")
     @PreAuthorize("hasRole('ADMIN')")
     public UserResponse registerAdmin(@RequestBody UserRequest request) {
         String role = request.rol() == null || request.rol().isBlank() ? "USER" : request.rol();
-        return authService.registerWithRole(request, role);
+        User created = authService.registerWithRole(toDomain(request), role);
+        return toResponse(created);
     }
 
     @PostMapping("/logout")
@@ -48,5 +51,13 @@ public class AuthController {
         return ResponseEntity.noContent()
                 .header(HttpHeaders.SET_COOKIE, authService.logoutCookie().toString())
                 .build();
+    }
+
+    private User toDomain(UserRequest request) {
+        return new User(null, request.nombre(), request.apellido(), request.email(), request.rol(), request.password());
+    }
+
+    private UserResponse toResponse(User user) {
+        return new UserResponse(user.id(), user.nombre(), user.apellido(), user.email(), user.rol());
     }
 }

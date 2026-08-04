@@ -1,6 +1,5 @@
 package com.exagonal001.autores.infra.models;
 
-import java.sql.Date;
 import java.util.UUID;
 
 import jakarta.persistence.Entity;

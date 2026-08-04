@@ -57,8 +57,8 @@ public class LibroController {
         @PreAuthorize("hasRole('ADMIN')")
     @PostMapping()
     public LibroResponse createLibro(@RequestBody LibroRequest libro) {
-        var createdLibro = createLibroCase.createLibro(libro);
-        return createdLibro;
+            var createdLibro = createLibroCase.createLibro(toDomain(libro));
+            return toResponse(createdLibro);
     }
     
     /**
@@ -73,7 +73,9 @@ public class LibroController {
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping()
     public List<LibroResponse> getAllLibros() {
-        return getAllLibroCase.getAllLibros();
+        return getAllLibroCase.getAllLibros().stream()
+                .map(this::toResponse)
+                .toList();
     }
 
     /**
@@ -89,7 +91,25 @@ public class LibroController {
     })
     @GetMapping("/{id}")
     public LibroResponse getById(@PathVariable String id) {
-        return getByidLibreCase.getById(id);
+        return toResponse(getByidLibreCase.getById(id));
+    }
+
+    private Libro toDomain(LibroRequest libro) {
+        return new Libro(
+                null,
+                libro.titulo(),
+                libro.autor(),
+                new AnioPublicacion(libro.anio()),
+                libro.url());
+    }
+
+    private LibroResponse toResponse(Libro libro) {
+        return new LibroResponse(
+                libro.id() != null ? libro.id().toString() : null,
+                libro.titulo(),
+                libro.Idautor(),
+                libro.anio().getAnio(),
+                libro.url());
     }
 
 }

@@ -61,21 +61,8 @@ public class AutoresController {
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public AutoresResponse createAutor(@RequestBody AutoresRequest autor) {
-        var autorDomain = new Autore(
-                null,
-                new Nombre(autor.nombre()),
-                new Apellido(autor.apellido()),
-                new Nacionalidad(autor.nacionalidad()),
-                new Fecha(autor.anioNacimiento()),
-                new Fecha(autor.anioFallecimiento()));
-        var createdAutor = createAutorCase.createAutores(autorDomain);
-        return new AutoresResponse(
-                createdAutor.id().toString(),
-                createdAutor.nombre().getNombre(),
-                createdAutor.apellido().getApellido(),
-                createdAutor.nacionalidad().getNacionalidad(),
-                createdAutor.fechaNacimiento().getFecha(),
-                createdAutor.fechaFallecimiento().getFecha());
+                var createdAutor = createAutorCase.createAutores(toDomain(autor));
+                return toResponse(createdAutor);
     }
 
     /**
@@ -92,13 +79,7 @@ public class AutoresController {
     public List<AutoresResponse> getAllAutores() {
         var autores = getAllAutoresCase.findAll();
         return autores.stream()
-                .map(autor -> new AutoresResponse(
-                        autor.id().toString(),
-                        autor.nombre().getNombre(),
-                        autor.apellido().getApellido(),
-                        autor.nacionalidad().getNacionalidad(),
-                        autor.fechaNacimiento().getFecha(),
-                        autor.fechaFallecimiento().getFecha()))
+                .map(this::toResponse)
                 .toList();
     }
 
@@ -117,13 +98,30 @@ public class AutoresController {
     @GetMapping("/{id}")
     public AutoresResponse getById(@PathVariable String id) {
                 var autor = getByIdAutoresCase.getById(id);
+                                return toResponse(autor);
+    }
+
+        private Autore toDomain(AutoresRequest autor) {
+                return new Autore(
+                                null,
+                                new Nombre(autor.nombre()),
+                                new Apellido(autor.apellido()),
+                                new Nacionalidad(autor.nacionalidad()),
+                                new Fecha(autor.anioNacimiento()),
+                                new Fecha(autor.anioFallecimiento()));
+        }
+
+        private AutoresResponse toResponse(Autore autor) {
+                Integer anioNacimiento = autor.fechaNacimiento() != null ? autor.fechaNacimiento().getFecha() : null;
+                Integer anioFallecimiento = autor.fechaFallecimiento() != null ? autor.fechaFallecimiento().getFecha() : null;
+
                 return new AutoresResponse(
-                                autor.id().toString(),
+                                autor.id() != null ? autor.id().toString() : null,
                                 autor.nombre().getNombre(),
                                 autor.apellido().getApellido(),
                                 autor.nacionalidad().getNacionalidad(),
-                                autor.fechaNacimiento().getFecha(),
-                                autor.fechaFallecimiento().getFecha());
-    }
+                                anioNacimiento != null ? anioNacimiento : 0,
+                                anioFallecimiento);
+        }
 
 }

@@ -1,7 +1,5 @@
 package com.exagonal001.autores.domain.models.values;
 
-import java.sql.Date;
-
 import lombok.Value;
 
 @Value
