@@ -5,10 +5,10 @@ import java.util.List;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.exagonal001.user.application.port.in.CreateUserCase;
-import com.exagonal001.user.application.port.in.GetAllUserCase;
-import com.exagonal001.user.application.port.in.GetUserCase;
-import com.exagonal001.user.application.port.in.UpdateUserCase;
+import com.exagonal001.user.application.port.in.user.CreateUserCase;
+import com.exagonal001.user.application.port.in.user.GetAllUserCase;
+import com.exagonal001.user.application.port.in.user.GetUserCase;
+import com.exagonal001.user.application.port.in.user.UpdateUserCase;
 import com.exagonal001.user.application.port.out.UserRepositoryPort;
 import com.exagonal001.user.domain.models.User;
 
@@ -50,7 +50,7 @@ public class UserService implements CreateUserCase, GetAllUserCase, GetUserCase,
                 user.nombre(),
                 user.apellido(),
                 user.email(),
-                user.rol(),
+                user.rolId(),
                 encodedPassword);
         return userRepositoryPort.save(userWithEncodedPassword);
     }

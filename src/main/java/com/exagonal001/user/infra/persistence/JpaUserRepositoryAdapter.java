@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import com.exagonal001.user.application.port.out.UserRepositoryPort;
 import com.exagonal001.user.domain.models.User;
+import com.exagonal001.user.infra.models.RolEntity;
 import com.exagonal001.user.infra.models.UserEntity;
 
 /**
@@ -34,7 +35,8 @@ public class JpaUserRepositoryAdapter implements UserRepositoryPort {
      */
     @Override
     public User save(User user) {
-        UserEntity userEntity = new UserEntity(null, user.nombre(), user.apellido(), user.email(), user.rol(), user.password());
+        RolEntity rolEntity = new RolEntity(user.rolId()); // Solo se necesita el ID del rol
+        UserEntity userEntity = new UserEntity(null, user.nombre(), user.apellido(), user.email(), rolEntity, user.password());
         UserEntity savedUser = springDataUserRepository.save(userEntity);
         return toDomain(savedUser);
     }
@@ -89,7 +91,7 @@ public class JpaUserRepositoryAdapter implements UserRepositoryPort {
 
 
     public boolean existsByRol(String rol) {
-        return springDataUserRepository.existsByRol(rol);
+        return springDataUserRepository.existsByRolNombre(rol);
     }
 
     private User toDomain(UserEntity userEntity) {
@@ -98,7 +100,7 @@ public class JpaUserRepositoryAdapter implements UserRepositoryPort {
                 userEntity.getNombre(),
                 userEntity.getApellido(),
                 userEntity.getEmail(),
-                userEntity.getRol(),
+                userEntity.getRol().getId(),
                 userEntity.getPassword());
     }
 

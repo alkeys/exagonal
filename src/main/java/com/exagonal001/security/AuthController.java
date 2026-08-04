@@ -1,6 +1,8 @@
 package com.exagonal001.security;
 
 import org.springframework.security.access.prepost.PreAuthorize;
+
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -8,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.exagonal001.user.controller.dto.UserRequest;
-import com.exagonal001.user.controller.dto.UserResponse;
+import com.exagonal001.user.controller.dto.User.UserRequest;
+import com.exagonal001.user.controller.dto.User.UserResponse;
 import com.exagonal001.user.domain.models.User;
 
 @RestController
@@ -33,7 +35,6 @@ public class AuthController {
     @PostMapping("/register")
     public UserResponse register(@RequestBody UserRequest request) {
         //solo registro de usuario 
-        request =new UserRequest(request.nombre(), request.apellido(), request.email(), "USER", request.password());
         User created = authService.registerUser(toDomain(request));
         return toResponse(created);
     }
@@ -54,10 +55,10 @@ public class AuthController {
     }
 
     private User toDomain(UserRequest request) {
-        return new User(null, request.nombre(), request.apellido(), request.email(), request.rol(), request.password());
+        return new User(null, request.nombre(), request.apellido(), request.email(), null, request.password());
     }
 
     private UserResponse toResponse(User user) {
-        return new UserResponse(user.id(), user.nombre(), user.apellido(), user.email(), user.rol());
+        return new UserResponse(user.id(), user.nombre(), user.apellido(), user.email(), user.rolId().toString());
     }
 }

@@ -12,7 +12,7 @@ import com.exagonal001.user.infra.models.UserEntity;
  */
 public interface SpringDataUserRepository extends JpaRepository<UserEntity, UUID> {
 
-    boolean existsByRol(String rol);
+    boolean existsByRolNombre(String rol);
 
     Optional<UserEntity> findByEmail(String email);
     

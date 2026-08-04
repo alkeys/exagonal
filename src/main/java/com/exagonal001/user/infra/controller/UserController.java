@@ -1,6 +1,7 @@
 package com.exagonal001.user.infra.controller;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,12 +12,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.security.access.prepost.PreAuthorize;
 
-import com.exagonal001.user.application.port.in.CreateUserCase;
-import com.exagonal001.user.application.port.in.GetAllUserCase;
-import com.exagonal001.user.application.port.in.GetUserCase;
-import com.exagonal001.user.application.port.in.UpdateUserCase;
-import com.exagonal001.user.controller.dto.UserRequest;
-import com.exagonal001.user.controller.dto.UserResponse;
+import com.exagonal001.user.application.port.in.user.CreateUserCase;
+import com.exagonal001.user.application.port.in.user.GetAllUserCase;
+import com.exagonal001.user.application.port.in.user.GetUserCase;
+import com.exagonal001.user.application.port.in.user.UpdateUserCase;
+import com.exagonal001.user.controller.dto.User.UserRequest;
+import com.exagonal001.user.controller.dto.User.UserResponse;
 import com.exagonal001.user.domain.models.User;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -137,11 +138,12 @@ public class UserController {
     }
 
     private User toDomain(UserRequest request) {
-        return new User(null, request.nombre(), request.apellido(), request.email(), request.rol(), request.password());
+        return new User(null, request.nombre(), request.apellido(), request.email(),
+         UUID.fromString(request.rol()), request.password());
     }
 
     private UserResponse toResponse(User user) {
-        return new UserResponse(user.id(), user.nombre(), user.apellido(), user.email(), user.rol());
+        return new UserResponse(user.id(), user.nombre(), user.apellido(), user.email(), user.rolId().toString());
     }
 
 }

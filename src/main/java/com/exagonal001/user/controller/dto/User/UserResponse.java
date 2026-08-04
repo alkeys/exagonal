@@ -1,4 +1,4 @@
-package com.exagonal001.user.controller.dto;
+package com.exagonal001.user.controller.dto.User;
 
 import java.util.UUID;
 

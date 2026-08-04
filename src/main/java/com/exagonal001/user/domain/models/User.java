@@ -14,7 +14,7 @@ public record User(
   String nombre,
   String apellido,
   String email,
-  String rol,
+  UUID rolId,
   String password
 ) {
   public User {

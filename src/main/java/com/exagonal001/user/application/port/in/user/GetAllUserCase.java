@@ -1,4 +1,4 @@
-package com.exagonal001.user.application.port.in;
+package com.exagonal001.user.application.port.in.user;
 
 import java.util.List;
 
