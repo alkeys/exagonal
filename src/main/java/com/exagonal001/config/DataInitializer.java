@@ -10,7 +10,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
+import com.exagonal001.user.application.port.in.CreateUserCase;
 import com.exagonal001.user.application.service.UserService;
+import com.exagonal001.user.controller.dto.UserRequest;
 import com.exagonal001.user.domain.models.User;
 
 import jakarta.transaction.Transactional;
@@ -19,7 +21,6 @@ import jakarta.transaction.Transactional;
 public class DataInitializer {
 
     
-
     @Bean
     CommandLineRunner initDatabase(UserService userService, InitializerHelper helper) {
         return args -> {
@@ -34,11 +35,10 @@ class InitializerHelper {
     @Transactional
     public void initialize(UserService userService) {
         if (!userService.existsByRol("ADMIN")) {
-            userService.createUser(new User(
-                    null,
+            userService.createUser(new UserRequest(
                     "Alex",
                     "Moran",
-                    "alex.moran@admin.com",
+                    "admin@admin.com",
                     "ADMIN",
                     "admin"
             ));

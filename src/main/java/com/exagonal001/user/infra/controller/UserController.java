@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import com.exagonal001.user.application.port.in.CreateUserCase;
 import com.exagonal001.user.application.port.in.GetAllUserCase;
@@ -40,6 +41,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RestController
 @RequestMapping("/user")
 @Tag(name = "Usuarios", description = "Operaciones para la gestion de usuarios")
+@PreAuthorize("hasRole('ADMIN')")
 public class UserController {
 
     private final CreateUserCase createUserCase;
@@ -75,8 +77,7 @@ public class UserController {
     })
     @PostMapping
     public UserResponse createUser(@RequestBody UserRequest userRequest) {
-        final User user = new User(null, userRequest.nombre(), userRequest.apellido(),userRequest.email(), userRequest.rol(), userRequest.password());
-        final Optional<UserResponse> createdUser = createUserCase.createUser(user);
+        final Optional<UserResponse> createdUser = createUserCase.createUser(userRequest);
         return createdUser.orElse(null);
     }
 

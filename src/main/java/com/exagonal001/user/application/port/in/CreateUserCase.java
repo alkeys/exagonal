@@ -2,6 +2,7 @@ package com.exagonal001.user.application.port.in;
 
 import java.util.Optional;
 
+import com.exagonal001.user.controller.dto.UserRequest;
 import com.exagonal001.user.controller.dto.UserResponse;
 import com.exagonal001.user.domain.models.User;
 
@@ -16,5 +17,5 @@ public interface CreateUserCase {
      * @param user usuario con los datos a guardar
      * @return usuario creado
      */
-    Optional<UserResponse> createUser(User user);
+    Optional<UserResponse> createUser(UserRequest user);
 }

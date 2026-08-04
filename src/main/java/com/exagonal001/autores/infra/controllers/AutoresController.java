@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import com.exagonal001.autores.application.port.in.CreateAutoresCase;
 import com.exagonal001.autores.application.port.in.GetallAutoresCase;
@@ -53,6 +54,8 @@ public class AutoresController {
                     content = @Content(schema = @Schema(implementation = AutoresResponse.class))),
             @ApiResponse(responseCode = "400", description = "Datos de entrada invalidos", content = @Content())
     })
+    
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public AutoresResponse createAutor(@RequestBody AutoresRequest autor) {
         var autorDomain = new Autore(
@@ -83,6 +86,7 @@ public class AutoresController {
             @ApiResponse(responseCode = "200", description = "Lista de autores obtenida correctamente",
                     content = @Content(array = @ArraySchema(schema = @Schema(implementation = AutoresResponse.class))))
     })
+        @PreAuthorize("isAuthenticated()")
     @GetMapping()
     public List<AutoresResponse> getAllAutores() {
         var autores = getAllAutoresCase.findAll();

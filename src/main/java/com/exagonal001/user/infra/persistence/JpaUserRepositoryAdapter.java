@@ -7,6 +7,7 @@ import java.util.UUID;
 import org.springframework.stereotype.Repository;
 
 import com.exagonal001.user.application.port.out.UserRepositoryPort;
+import com.exagonal001.user.controller.dto.UserRequest;
 import com.exagonal001.user.controller.dto.UserResponse;
 import com.exagonal001.user.domain.models.User;
 import com.exagonal001.user.infra.models.UserEntity;
@@ -35,8 +36,8 @@ public class JpaUserRepositoryAdapter implements UserRepositoryPort {
      * @return usuario persistido con su identificador generado
      */
     @Override
-    public Optional<UserResponse> save(User user) {
-        UserEntity userEntity = new UserEntity(user.id(), user.nombre(), user.apellido(), user.email(), user.rol(), user.password());
+    public Optional<UserResponse> save(UserRequest user) {
+        UserEntity userEntity = new UserEntity(null, user.nombre(), user.apellido(), user.email(), user.rol(), user.password());
         UserEntity savedUser = springDataUserRepository.save(userEntity);
         return Optional.of(new UserResponse(savedUser.getId(), savedUser.getNombre(), savedUser.getApellido(), savedUser.getEmail(), savedUser.getRol()));
     }

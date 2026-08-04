@@ -20,10 +20,10 @@ public class SwaggerConfig {
                                                 .version("1.0")
                                                 .description("API para la gestion de libros y autores y mas cosas relacionadas con la libreria"))
                                 .components(new Components()
-                                                .addSecuritySchemes("cookieAuth", new SecurityScheme()
-                                                                .type(SecurityScheme.Type.APIKEY)
-                                                                .in(SecurityScheme.In.COOKIE)
-                                                                .name("jwt")))
-                                .addSecurityItem(new SecurityRequirement().addList("cookieAuth"));
+                                                .addSecuritySchemes("bearerAuth", new SecurityScheme()
+                                                                .type(SecurityScheme.Type.HTTP)
+                                                                .scheme("bearer")
+                                                                .bearerFormat("JWT")))
+                                .addSecurityItem(new SecurityRequirement().addList("bearerAuth"));
         }
 }

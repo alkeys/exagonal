@@ -11,6 +11,7 @@ import com.exagonal001.user.application.port.in.GetAllUserCase;
 import com.exagonal001.user.application.port.in.GetUserCase;
 import com.exagonal001.user.application.port.in.UpdateUserCase;
 import com.exagonal001.user.application.port.out.UserRepositoryPort;
+import com.exagonal001.user.controller.dto.UserRequest;
 import com.exagonal001.user.controller.dto.UserResponse;
 import com.exagonal001.user.domain.models.User;
 
@@ -45,9 +46,9 @@ public class UserService implements CreateUserCase, GetAllUserCase, GetUserCase,
      * @return usuario persistido, si la operación fue exitosa
      */
     @Override
-    public Optional<UserResponse> createUser(User user) {
+    public Optional<UserResponse> createUser(UserRequest user) {
         String encodedPassword = passwordEncoder.encode(user.password());
-        User userWithEncodedPassword = new User(user.id(), user.nombre(), user.apellido(), user.email(), user.rol(), encodedPassword);
+        UserRequest userWithEncodedPassword = new UserRequest(user.nombre(), user.apellido(), user.email(), user.rol(), encodedPassword);
         UserResponse savedUser = userRepositoryPort.save(userWithEncodedPassword).orElse(null);
         return Optional.ofNullable(savedUser);
     }

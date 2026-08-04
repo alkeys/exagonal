@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import com.exagonal001.user.controller.dto.UserRequest;
 import com.exagonal001.user.controller.dto.UserResponse;
 import com.exagonal001.user.domain.models.User;
 
@@ -18,7 +19,7 @@ public interface UserRepositoryPort {
      * @param user usuario a persistir
      * @return usuario persistido con su identificador asignado
      */
-    Optional<UserResponse> save(User user);
+    Optional<UserResponse> save(UserRequest user);
 
     /**
      * Recupera todos los usuarios almacenados.

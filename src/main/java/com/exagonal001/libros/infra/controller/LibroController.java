@@ -2,6 +2,7 @@ package com.exagonal001.libros.infra.controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import com.exagonal001.libros.application.port.in.CreateLibroCase;
 import com.exagonal001.libros.controller.dto.LibroRequest;
@@ -42,6 +43,7 @@ public class LibroController {
                     content = @Content(schema = @Schema(implementation = LibroResponse.class))),
             @ApiResponse(responseCode = "400", description = "Datos de entrada invalidos", content = @Content())
     })
+        @PreAuthorize("hasRole('ADMIN')")
     @PostMapping()
     public LibroResponse createLibro(@RequestBody LibroRequest libro) {
         var libroDomain = new Libro(
