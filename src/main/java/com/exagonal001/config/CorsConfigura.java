@@ -18,6 +18,7 @@ public class CorsConfigura  {
         configuration.setAllowCredentials(true);
         configuration.addAllowedOriginPattern("http://localhost:*");
         configuration.addAllowedOriginPattern("http://127.0.0.1:*");
+        configuration.addAllowedOriginPattern("https://colin-seq-atm-red.trycloudflare.com");
         configuration.addAllowedHeader(CorsConfiguration.ALL);
         configuration.addAllowedMethod(CorsConfiguration.ALL);
         configuration.addExposedHeader(HttpHeaders.SET_COOKIE);
