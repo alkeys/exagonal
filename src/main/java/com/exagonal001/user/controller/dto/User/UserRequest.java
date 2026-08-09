@@ -17,7 +17,7 @@ public record UserRequest(
     String apellido,
     @Schema(description = "Correo electronico del usuario", example = "alex@example.com")
     String email,
-    @Schema(description = "Rol asignado al usuario", example = "ADMIN")
+    @Schema(description = "Rol asignado al usuario", example = "USER")
     String rol,
     @Schema(description = "Contraseña del usuario", example = "P@ssw0rd123")
     String password

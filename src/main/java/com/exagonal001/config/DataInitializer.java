@@ -32,11 +32,14 @@ class InitializerHelper {
 
     @Transactional
     public void initialize(UserService userService, RolService rolService) {
-        Rol adminRol = new Rol("ADMIN", "Administrador", true);
-        if (!rolService.existsByName(adminRol.nombre().getNombre())) {
-            adminRol = rolService.createRol(adminRol);
+        Rol adminRol[] = new Rol[2];
+        adminRol[0]=new Rol("ADMIN", "Administrador", true);
+        adminRol[1]=new Rol("USER", "USER", true);
+        if (!rolService.existsByName(adminRol[0].nombre().getNombre())) {
+            adminRol[0] = rolService.createRol(adminRol[0]);
+            rolService.createRol(adminRol[1]);
         } else {
-            adminRol = rolService.getAllRoles().stream()
+            adminRol[0] = rolService.getAllRoles().stream()
                     .filter(rol -> "ADMIN".equals(rol.nombre().getNombre()))
                     .findFirst()
                     .orElseThrow(() -> new IllegalStateException("No se encontro el rol ADMIN"));
@@ -47,7 +50,7 @@ class InitializerHelper {
                     "Alex",
                     "Moran",
                     "admin@admin.com",
-                    adminRol.id(),
+                    adminRol[0].id(),
                     "admin"
             ));
         }
