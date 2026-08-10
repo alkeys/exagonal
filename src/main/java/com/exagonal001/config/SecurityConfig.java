@@ -10,7 +10,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -39,7 +38,7 @@ public class SecurityConfig {
                     .requestMatchers(ListaAuth.RUTAS_SWAGGER_PUBLICAS)
                         .permitAll()
                     .requestMatchers(HttpMethod.GET, ListaAuth.RUTAS_AUTORES_GET_AUTENTICADAS).authenticated()
-                    .requestMatchers(HttpMethod.POST, ListaAuth.RUTAS_POST_USUARIO_Y_ADMIN).hasAnyRole("USER", "ADMIN")
+                    .requestMatchers(HttpMethod.GET, ListaAuth.RUTAS_POST_USUARIO_Y_ADMIN).hasAnyRole("USER", "ADMIN")
                     .requestMatchers(HttpMethod.POST, ListaAuth.RUTAS_POST_SOLO_ADMIN).hasRole("ADMIN")
                     .requestMatchers(HttpMethod.GET, ListaAuth.RUTAS_GET_SOLO_ADMIN).hasRole("ADMIN")
                         .anyRequest().authenticated())
@@ -51,5 +50,4 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
 }

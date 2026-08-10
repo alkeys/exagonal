@@ -9,5 +9,7 @@ public interface AutoresRepositoryPort {
     Autore save(Autore autores);
     List<Autore> findAll();
     Autore findById(String id);
+    Autore update(String id, Autore autores);
+    void delete(String id);
     
 }

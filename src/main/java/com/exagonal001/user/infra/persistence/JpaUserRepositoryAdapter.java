@@ -3,6 +3,7 @@ package com.exagonal001.user.infra.persistence;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Repository;
 
 import com.exagonal001.user.application.port.out.UserRepositoryPort;
@@ -89,6 +90,22 @@ public class JpaUserRepositoryAdapter implements UserRepositoryPort {
         springDataUserRepository.save(userEntity);
     }
 
+
+    /**
+     * Elimina un usuario por su identificador.
+     *
+     * @param id identificador del usuario a eliminar
+     */
+    @Override
+    public void deleteUser(String id) {
+        UserEntity userEntity = springDataUserRepository.findById(UUID.fromString(id))
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        try {
+            springDataUserRepository.delete(userEntity);
+        } catch (DataIntegrityViolationException e) {
+            throw new RuntimeException("No se puede eliminar el usuario: tiene préstamos asociados", e);
+        }
+    }
 
     public boolean existsByRol(String rol) {
         return springDataUserRepository.existsByRolNombre(rol);

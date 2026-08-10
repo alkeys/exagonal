@@ -7,8 +7,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import com.exagonal001.autores.application.port.in.CreateAutoresCase;
+import com.exagonal001.autores.application.port.in.DeleteAutoresCase;
 import com.exagonal001.autores.application.port.in.GetByidAutoresCase;
 import com.exagonal001.autores.application.port.in.GetallAutoresCase;
+import com.exagonal001.autores.application.port.in.UpdateAutoresCase;
 import com.exagonal001.autores.controller.dto.AutoresRequest;
 import com.exagonal001.autores.controller.dto.AutoresResponse;
 import com.exagonal001.autores.domain.models.Autore;
@@ -21,6 +23,8 @@ import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -38,12 +42,16 @@ public class AutoresController {
     private final CreateAutoresCase createAutorCase;
     private final GetallAutoresCase getAllAutoresCase;
     private final GetByidAutoresCase getByIdAutoresCase;
+    private final UpdateAutoresCase updateAutoresCase;
+    private final DeleteAutoresCase deleteAutoresCase;
 
     public AutoresController(CreateAutoresCase createAutorCase, GetallAutoresCase getAllAutoresCase,
-            GetByidAutoresCase getByIdAutoresCase) {
+            GetByidAutoresCase getByIdAutoresCase, UpdateAutoresCase updateAutoresCase, DeleteAutoresCase deleteAutoresCase) {
         this.createAutorCase = createAutorCase;
         this.getAllAutoresCase = getAllAutoresCase;
         this.getByIdAutoresCase = getByIdAutoresCase;
+        this.updateAutoresCase = updateAutoresCase;
+        this.deleteAutoresCase = deleteAutoresCase;
     }
 
     /**
@@ -99,6 +107,41 @@ public class AutoresController {
     public AutoresResponse getById(@PathVariable String id) {
                 var autor = getByIdAutoresCase.getById(id);
                                 return toResponse(autor);
+    }
+
+    /**
+     * Actualiza un autor existente por su ID.
+     * 
+     * @param id   El ID del autor a actualizar.
+     * @param autor Los nuevos datos del autor.
+     * @return El autor actualizado.
+     */
+    @Operation(summary = "Actualizar un autor", description = "Actualiza los datos de un autor existente según su ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Autor actualizado correctamente", content = @Content(schema = @Schema(implementation = AutoresResponse.class))),
+            @ApiResponse(responseCode = "404", description = "Autor no encontrado", content = @Content())
+    })
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/{id}")
+    public AutoresResponse updateAutor(@PathVariable String id, @RequestBody AutoresRequest autor) {
+                var updatedAutor = updateAutoresCase.updateAutores(id, toDomain(autor));
+                return toResponse(updatedAutor);
+    }
+
+    /**
+     * Elimina un autor por su ID.
+     * 
+     * @param id El ID del autor a eliminar.
+     */
+    @Operation(summary = "Eliminar un autor", description = "Elimina un autor del sistema según su ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Autor eliminado correctamente"),
+            @ApiResponse(responseCode = "404", description = "Autor no encontrado", content = @Content())
+    })
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/{id}")
+    public void deleteAutor(@PathVariable String id) {
+                deleteAutoresCase.deleteAutores(id);
     }
 
         private Autore toDomain(AutoresRequest autor) {

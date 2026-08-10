@@ -21,12 +21,13 @@ public final class ListaAuth {
 
     public static final String[] RUTAS_POST_SOLO_ADMIN = {
             "/autores/**",
-            "/libros/**",
+
             "/user/**"
     };
 
     public static final String[] RUTAS_POST_USUARIO_Y_ADMIN = {
-            "/prestamos/**"
+            "/prestamos/**",
+            "/libros/**",
     };
 
     public static final String[] RUTAS_GET_SOLO_ADMIN = {

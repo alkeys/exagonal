@@ -3,6 +3,7 @@ package com.exagonal001.autores.infra.persistencie;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Repository;
 
 import com.exagonal001.autores.application.port.out.AutoresRepositoryPort;
@@ -69,5 +70,36 @@ public class JpaAutoresRepositoryAdapter implements AutoresRepositoryPort {
             new Fecha(autoresEntity.getFechaNacimiento()),
             new Fecha(autoresEntity.getFechaFallecimiento())
         );
+    }
+
+    @Override
+    public Autore update(String id, Autore autores) {
+        AutoresEntity autoresEntity = springDataAutoresRepository.findById(UUID.fromString(id))
+                .orElseThrow(() -> new RuntimeException("Autor no encontrado con id: " + id));
+        autoresEntity.setNombre(autores.nombre().getNombre());
+        autoresEntity.setApellido(autores.apellido().getApellido());
+        autoresEntity.setNacionalidad(autores.nacionalidad().getNacionalidad());
+        autoresEntity.setFechaNacimiento(autores.fechaNacimiento().getFecha());
+        autoresEntity.setFechaFallecimiento(autores.fechaFallecimiento().getFecha());
+        AutoresEntity updatedEntity = springDataAutoresRepository.save(autoresEntity);
+        return new Autore(
+            updatedEntity.getId(),
+            autores.nombre(),
+            autores.apellido(),
+            autores.nacionalidad(),
+            autores.fechaNacimiento(),
+            autores.fechaFallecimiento()
+        );
+    }
+
+    @Override
+    public void delete(String id) {
+        AutoresEntity autoresEntity = springDataAutoresRepository.findById(UUID.fromString(id))
+                .orElseThrow(() -> new RuntimeException("Autor no encontrado con id: " + id));
+        try {
+            springDataAutoresRepository.delete(autoresEntity);
+        } catch (DataIntegrityViolationException e) {
+            throw new RuntimeException("No se puede eliminar el autor: tiene libros asociados", e);
+        }
     }
 }

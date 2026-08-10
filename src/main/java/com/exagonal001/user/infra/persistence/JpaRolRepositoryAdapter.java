@@ -3,6 +3,7 @@ package com.exagonal001.user.infra.persistence;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Repository;
 
 import com.exagonal001.user.application.port.out.RolRepositoryPort;
@@ -80,5 +81,16 @@ public class JpaRolRepositoryAdapter implements RolRepositoryPort {
         return springDataRolRepository.findById(id)
                 .map(this::toDomain)
                 .orElseThrow(() -> new IllegalArgumentException("Rol no encontrado: " + id));
+    }
+
+    @Override
+    public void deleteRol(UUID id) {
+        springDataRolRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Rol no encontrado: " + id));
+        try {
+            springDataRolRepository.deleteById(id);
+        } catch (DataIntegrityViolationException e) {
+            throw new RuntimeException("No se puede eliminar el rol: tiene usuarios asociados", e);
+        }
     }
 }

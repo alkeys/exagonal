@@ -1,5 +1,9 @@
 package com.exagonal001.libros.infra.persistencie;
 
+import java.time.LocalDate;
+import java.util.List;
+import java.util.UUID;
+
 import org.springframework.stereotype.Repository;
 
 import com.exagonal001.libros.application.port.out.PrestamosRepositoryPort;
@@ -26,6 +30,37 @@ public class JpaPRestamosRepositoryAdapter implements PrestamosRepositoryPort {
     }
 
     @Override
+    public List<PrestamosLibros> findAll() {
+        return springDataPrestamoRepository.findAll().stream()
+                .map(this::toDomain)
+                .toList();
+    }
+
+    @Override
+    public PrestamosLibros findById(String id) {
+        PrestamosEntity prestamosEntity = springDataPrestamoRepository.findById(UUID.fromString(id))
+                .orElseThrow(() -> new RuntimeException("Préstamo no encontrado con id: " + id));
+        return toDomain(prestamosEntity);
+    }
+
+    @Override
+    public PrestamosLibros update(String id, LocalDate fechaPrestamo, LocalDate fechaDevolucion) {
+        PrestamosEntity prestamosEntity = springDataPrestamoRepository.findById(UUID.fromString(id))
+                .orElseThrow(() -> new RuntimeException("Préstamo no encontrado con id: " + id));
+        prestamosEntity.setFechaPrestamo(fechaPrestamo);
+        prestamosEntity.setFechaDevolucion(fechaDevolucion);
+        PrestamosEntity updatedEntity = springDataPrestamoRepository.save(prestamosEntity);
+        return toDomain(updatedEntity);
+    }
+
+    @Override
+    public void delete(String id) {
+        PrestamosEntity prestamosEntity = springDataPrestamoRepository.findById(UUID.fromString(id))
+                .orElseThrow(() -> new RuntimeException("Préstamo no encontrado con id: " + id));
+        springDataPrestamoRepository.delete(prestamosEntity);
+    }
+
+    @Override
      public PrestamosLibros save(PrestamosLibros prestamosLibros) {
         LibroEntity libroEntity = new LibroEntity();
         UserEntity userEntity = springDataUserRepository.findById(prestamosLibros.idUsuario()).orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
@@ -39,15 +74,17 @@ public class JpaPRestamosRepositoryAdapter implements PrestamosRepositoryPort {
             prestamosLibros.fechaDevolucion()
         );
         PrestamosEntity savedEntity = springDataPrestamoRepository.save(prestamosEntity);
-        return new PrestamosLibros(
-            savedEntity.getIdPrestamo(),
-            savedEntity.getIdUsuario().getId(),
-            savedEntity.getIdLibro().getId(),
-            savedEntity.getFechaPrestamo(),
-            savedEntity.getFechaDevolucion()
+        return toDomain(savedEntity);
+    }
 
-        );        
-        
+    private PrestamosLibros toDomain(PrestamosEntity entity) {
+        return new PrestamosLibros(
+            entity.getIdPrestamo(),
+            entity.getIdUsuario().getId(),
+            entity.getIdLibro().getId(),
+            entity.getFechaPrestamo(),
+            entity.getFechaDevolucion()
+        );
     }
     
 }

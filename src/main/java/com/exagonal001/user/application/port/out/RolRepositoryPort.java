@@ -43,4 +43,10 @@ public interface RolRepositoryPort {
 
     Rol findById(UUID id);
 
+    /**
+     * Elimina un rol por su identificador.
+     * @param id identificador del rol a eliminar
+     */
+    void deleteRol(UUID id);
+
 }

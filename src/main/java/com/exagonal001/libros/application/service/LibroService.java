@@ -5,13 +5,15 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.exagonal001.libros.application.port.in.CreateLibroCase;
+import com.exagonal001.libros.application.port.in.DeleteLibroCase;
 import com.exagonal001.libros.application.port.in.GetAllLibroCase;
 import com.exagonal001.libros.application.port.in.GetByidLibreCase;
+import com.exagonal001.libros.application.port.in.UpdateLibroCase;
 import com.exagonal001.libros.application.port.out.LibroRepositoryPort;
 import com.exagonal001.libros.domain.models.Libro;
 
 @Service
-public class LibroService implements CreateLibroCase , GetAllLibroCase, GetByidLibreCase {
+public class LibroService implements CreateLibroCase , GetAllLibroCase, GetByidLibreCase, UpdateLibroCase, DeleteLibroCase {
 
     private final LibroRepositoryPort libroRepositoryPort;
 
@@ -32,5 +34,15 @@ public class LibroService implements CreateLibroCase , GetAllLibroCase, GetByidL
     @Override
     public Libro getById(String id) {
         return libroRepositoryPort.findById(id);
+    }
+
+    @Override
+    public Libro updateLibro(String id, Libro libro) {
+        return libroRepositoryPort.update(id, libro);
+    }
+
+    @Override
+    public void deleteLibro(String id) {
+        libroRepositoryPort.delete(id);
     }
 }

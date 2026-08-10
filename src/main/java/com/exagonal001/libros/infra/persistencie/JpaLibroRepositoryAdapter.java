@@ -3,6 +3,7 @@ package com.exagonal001.libros.infra.persistencie;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Repository;
 
 import com.exagonal001.autores.infra.models.AutoresEntity;
@@ -47,6 +48,34 @@ public class JpaLibroRepositoryAdapter implements LibroRepositoryPort {
         LibroEntity libro = springDataLibroRepository.findById(UUID.fromString(id))
                 .orElseThrow(() -> new RuntimeException("Libro no encontrado con id: " + id));
         return toDomain(libro);
+    }
+
+    @Override
+    public Libro update(String id, Libro libro) {
+        LibroEntity libroEntity = springDataLibroRepository.findById(UUID.fromString(id))
+                .orElseThrow(() -> new RuntimeException("Libro no encontrado con id: " + id));
+
+        AutoresEntity autorEntity = new AutoresEntity();
+        autorEntity.setId(UUID.fromString(libro.Idautor()));
+
+        libroEntity.setTitulo(libro.titulo());
+        libroEntity.setIdautor(autorEntity);
+        libroEntity.setAnioPublicacion(libro.anio().getAnio());
+        libroEntity.setUrl(libro.url());
+
+        LibroEntity updatedLibro = springDataLibroRepository.save(libroEntity);
+        return toDomain(updatedLibro);
+    }
+
+    @Override
+    public void delete(String id) {
+        LibroEntity libroEntity = springDataLibroRepository.findById(UUID.fromString(id))
+                .orElseThrow(() -> new RuntimeException("Libro no encontrado con id: " + id));
+        try {
+            springDataLibroRepository.delete(libroEntity);
+        } catch (DataIntegrityViolationException e) {
+            throw new RuntimeException("No se puede eliminar el libro: tiene préstamos asociados", e);
+        }
     }
 
     private Libro toDomain(LibroEntity libroEntity) {

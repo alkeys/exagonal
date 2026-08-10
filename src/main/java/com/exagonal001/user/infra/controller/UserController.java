@@ -3,6 +3,7 @@ package com.exagonal001.user.infra.controller;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import com.exagonal001.user.application.port.in.user.CreateUserCase;
+import com.exagonal001.user.application.port.in.user.DeleteUserCase;
 import com.exagonal001.user.application.port.in.user.GetAllUserCase;
 import com.exagonal001.user.application.port.in.user.GetUserCase;
 import com.exagonal001.user.application.port.in.user.UpdateUserCase;
@@ -47,6 +49,7 @@ public class UserController {
     private final GetAllUserCase getAllUserCase;
     private final GetUserCase getUserCase;
     private final UpdateUserCase updateUserCase;
+    private final DeleteUserCase deleteUserCase;
     /**
      * Crea el controlador con los casos de uso necesarios.
      *
@@ -55,11 +58,12 @@ public class UserController {
      * @param getUserCase caso de uso para obtener un usuario por su identificador
      * @param updateUserCase caso de uso para actualizar un usuario por su identificador
      */
-    public UserController(CreateUserCase createUserCase, GetAllUserCase getAllUserCase, GetUserCase getUserCase, UpdateUserCase updateUserCase) {
+    public UserController(CreateUserCase createUserCase, GetAllUserCase getAllUserCase, GetUserCase getUserCase, UpdateUserCase updateUserCase, DeleteUserCase deleteUserCase) {
         this.createUserCase = createUserCase;
         this.getAllUserCase = getAllUserCase;
         this.getUserCase = getUserCase;
         this.updateUserCase = updateUserCase;
+        this.deleteUserCase = deleteUserCase;
     }
 
     /**
@@ -135,6 +139,21 @@ public class UserController {
             @Parameter(description = "Nuevo nombre del usuario") @RequestParam String nombre,
             @Parameter(description = "Nuevo apellido del usuario") @RequestParam String apellido) {
         updateUserCase.updateUser(id, nombre, apellido);
+    }
+
+    /**
+     * Elimina un usuario por su ID.
+     *
+     * @param id identificador del usuario
+     */
+    @Operation(summary = "Eliminar un usuario", description = "Elimina un usuario del sistema según su identificador")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Usuario eliminado correctamente"),
+            @ApiResponse(responseCode = "404", description = "Usuario no encontrado", content = @Content())
+    })
+    @DeleteMapping("deleteUser/{id}")
+    public void deleteUser(@Parameter(description = "Identificador del usuario") @PathVariable String id) {
+        deleteUserCase.deleteUser(id);
     }
 
     private User toDomain(UserRequest request) {

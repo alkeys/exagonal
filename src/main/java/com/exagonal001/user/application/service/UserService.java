@@ -6,6 +6,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.exagonal001.user.application.port.in.user.CreateUserCase;
+import com.exagonal001.user.application.port.in.user.DeleteUserCase;
 import com.exagonal001.user.application.port.in.user.GetAllUserCase;
 import com.exagonal001.user.application.port.in.user.GetUserCase;
 import com.exagonal001.user.application.port.in.user.UpdateUserCase;
@@ -20,7 +21,7 @@ import com.exagonal001.user.domain.models.User;
  * </p>
  */
 @Service
-public class UserService implements CreateUserCase, GetAllUserCase, GetUserCase, UpdateUserCase {
+public class UserService implements CreateUserCase, GetAllUserCase, GetUserCase, UpdateUserCase, DeleteUserCase {
 
     private final UserRepositoryPort userRepositoryPort;
     private final PasswordEncoder passwordEncoder;
@@ -89,6 +90,16 @@ public class UserService implements CreateUserCase, GetAllUserCase, GetUserCase,
         userRepositoryPort.updateUser(id, nombre, apellido);
     }
 
+
+    /**
+     * Elimina un usuario por su identificador.
+     *
+     * @param id identificador del usuario a eliminar
+     */
+    @Override
+    public void deleteUser(String id) {
+        userRepositoryPort.deleteUser(id);
+    }
 
     public boolean existsByRol(String rol) {
         return userRepositoryPort.existsByRol(rol);

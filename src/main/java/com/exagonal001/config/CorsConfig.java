@@ -2,15 +2,13 @@ package com.exagonal001.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.http.HttpHeaders;
-
 
 @Configuration
-public class CorsConfigura  {
-
+public class CorsConfig {
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
@@ -27,5 +25,4 @@ public class CorsConfigura  {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
-    
 }

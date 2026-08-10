@@ -8,4 +8,6 @@ public interface LibroRepositoryPort {
     Libro save(Libro libro);
     List<Libro> findAll();
     Libro findById(String id);
+    Libro update(String id, Libro libro);
+    void delete(String id);
 }

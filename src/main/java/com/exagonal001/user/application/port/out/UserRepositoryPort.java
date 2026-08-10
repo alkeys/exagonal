@@ -49,6 +49,13 @@ public interface UserRepositoryPort {
      */
     void updateUser(String id, String nombre, String apellido);
 
+    /**
+     * Elimina un usuario por su identificador.
+     *
+     * @param id identificador del usuario a eliminar
+     */
+    void deleteUser(String id);
+
 
 
     boolean existsByRol(String rol);
