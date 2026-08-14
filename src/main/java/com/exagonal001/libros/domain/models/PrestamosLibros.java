@@ -6,6 +6,7 @@ public record PrestamosLibros(
     UUID idPrestamo,
     UUID idUsuario,    
     UUID idLibro,
+    boolean estadoPrestamo,
     java.time.LocalDate fechaPrestamo,
     java.time.LocalDate fechaDevolucion
 ) {
@@ -22,6 +23,10 @@ public record PrestamosLibros(
         if (fechaDevolucion == null) {
             throw new IllegalArgumentException("La fecha de devolucion no puede ser nula");
         }
+        if (estadoPrestamo != true && estadoPrestamo != false) {
+            throw new IllegalArgumentException("El estado del prestamo debe ser true o false");
+        }
+
     }
     
     

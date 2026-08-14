@@ -10,6 +10,8 @@ public record PrestamoResponse(
     String idUsuario,
     @Schema(description = "Identificador del libro prestado", example = "3fa85f64-5717-4562-b3fc-2c963f66afa6")
     String idLibro,
+    @Schema(description = "Estado del prestamo", example = "true")
+    boolean estadoPrestamo,
     @Schema(description = "Fecha en que se realizo el prestamo", example = "2026-08-01")
     String fechaPrestamo,
     @Schema(description = "Fecha limite para devolver el libro", example = "2026-08-15")

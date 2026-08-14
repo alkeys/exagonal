@@ -20,7 +20,7 @@ public class SwaggerConfig {
                 return new OpenAPI()
                                 .servers(List.of(
                                                 new Server().url(
-                                                                "https://colin-seq-atm-red.trycloudflare.com")))
+                                                                "http://localhost:8080")))
                                 .info(new Info()
                                                 .title("API de libreria mediante hexagonal")
                                                 .version("1.0")

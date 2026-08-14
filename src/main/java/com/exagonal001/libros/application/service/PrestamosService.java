@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.exagonal001.libros.application.port.in.CreatePrestamoCase;
 import com.exagonal001.libros.application.port.in.DeletePrestamoCase;
+import com.exagonal001.libros.application.port.in.DevolverLibroCase;
 import com.exagonal001.libros.application.port.in.GetAllPrestamoCase;
 import com.exagonal001.libros.application.port.in.GetPrestamoCase;
 import com.exagonal001.libros.application.port.in.UpdatePrestamoCase;
@@ -14,7 +15,7 @@ import com.exagonal001.libros.application.port.out.PrestamosRepositoryPort;
 import com.exagonal001.libros.domain.models.PrestamosLibros;
 
 @Service
-public class PrestamosService implements CreatePrestamoCase, GetAllPrestamoCase, GetPrestamoCase, UpdatePrestamoCase, DeletePrestamoCase {
+public class PrestamosService implements CreatePrestamoCase, GetAllPrestamoCase, GetPrestamoCase, UpdatePrestamoCase, DeletePrestamoCase , DevolverLibroCase {
     private final PrestamosRepositoryPort prestamosRepositoryPort;
 
     public PrestamosService(PrestamosRepositoryPort prestamosRepositoryPort) {
@@ -46,4 +47,9 @@ public class PrestamosService implements CreatePrestamoCase, GetAllPrestamoCase,
         prestamosRepositoryPort.delete(id);
     }
     
+
+    @Override
+    public void devolverLibro(String id, String idUsuario) {
+        prestamosRepositoryPort.devolverLibro(id, idUsuario);
+    }
 }

@@ -34,5 +34,6 @@ public class LibroEntity {
     private AutoresEntity idautor;
     private int anioPublicacion;
     private String url;
+    private int cantidadDisponible;
     
 }

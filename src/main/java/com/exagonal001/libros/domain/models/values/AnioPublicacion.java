@@ -1,4 +1,4 @@
-package com.exagonal001.libros.domain.models;
+package com.exagonal001.libros.domain.models.values;
 
 import java.time.Year;
 

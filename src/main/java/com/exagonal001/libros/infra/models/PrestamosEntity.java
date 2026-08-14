@@ -37,9 +37,15 @@ public class PrestamosEntity {
     @JoinColumn(name = "id_libro")
     private LibroEntity idLibro;
 
+    @Column(name = "estado_prestamo")
+    private boolean estadoPrestamo;
+
+
     @Column(name = "fecha_prestamo")
     private LocalDate fechaPrestamo;
     @Column(name = "fecha_devolucion")
     private LocalDate fechaDevolucion;
+
+
     
 }

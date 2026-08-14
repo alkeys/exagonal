@@ -8,8 +8,9 @@ import org.springframework.stereotype.Repository;
 
 import com.exagonal001.autores.infra.models.AutoresEntity;
 import com.exagonal001.libros.application.port.out.LibroRepositoryPort;
-import com.exagonal001.libros.domain.models.AnioPublicacion;
 import com.exagonal001.libros.domain.models.Libro;
+import com.exagonal001.libros.domain.models.values.AnioPublicacion;
+import com.exagonal001.libros.domain.models.values.Cantidad;
 import com.exagonal001.libros.infra.models.LibroEntity;
 
 @Repository
@@ -29,6 +30,7 @@ public class JpaLibroRepositoryAdapter implements LibroRepositoryPort {
         libroEntity.setTitulo(libro.titulo());
         libroEntity.setAnioPublicacion(libro.anio().getAnio());
         libroEntity.setUrl(libro.url());
+        libroEntity.setCantidadDisponible(libro.cantidadDisponible().getCantidad());
         libroEntity.setIdautor(autorEntity);
         LibroEntity savedLibro = springDataLibroRepository.save(libroEntity);
         return toDomain(savedLibro);
@@ -62,6 +64,7 @@ public class JpaLibroRepositoryAdapter implements LibroRepositoryPort {
         libroEntity.setIdautor(autorEntity);
         libroEntity.setAnioPublicacion(libro.anio().getAnio());
         libroEntity.setUrl(libro.url());
+        libroEntity.setCantidadDisponible(libro.cantidadDisponible().getCantidad());
 
         LibroEntity updatedLibro = springDataLibroRepository.save(libroEntity);
         return toDomain(updatedLibro);
@@ -84,7 +87,8 @@ public class JpaLibroRepositoryAdapter implements LibroRepositoryPort {
                 libroEntity.getTitulo(),
                 libroEntity.getIdautor().getId().toString(),
                 new AnioPublicacion(libroEntity.getAnioPublicacion()),
-                libroEntity.getUrl()
+                libroEntity.getUrl(),
+                new Cantidad(libroEntity.getCantidadDisponible())
         );
     }
 

@@ -11,7 +11,9 @@ public record LibroRequest(
     @Schema(description = "Año de publicación del libro", example = "1605")
     int anio,
     @Schema(description = "URL del libro", example = "https://www.example.com/el-quijote")
-    String url
+    String url,
+    @Schema(description = "Cantidad de ejemplares disponibles", example = "10")
+    int cantidadDisponible
 ) {
     
 }

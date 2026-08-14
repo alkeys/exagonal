@@ -14,8 +14,9 @@ import com.exagonal001.libros.application.port.in.GetByidLibreCase;
 import com.exagonal001.libros.application.port.in.UpdateLibroCase;
 import com.exagonal001.libros.controller.dto.LibroRequest;
 import com.exagonal001.libros.controller.dto.LibroResponse;
-import com.exagonal001.libros.domain.models.AnioPublicacion;
 import com.exagonal001.libros.domain.models.Libro;
+import com.exagonal001.libros.domain.models.values.AnioPublicacion;
+import com.exagonal001.libros.domain.models.values.Cantidad;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -141,7 +142,8 @@ public class LibroController {
                 libro.titulo(),
                 libro.autor(),
                 new AnioPublicacion(libro.anio()),
-                libro.url());
+                libro.url(),
+                new Cantidad(libro.cantidadDisponible()));
     }
 
     private LibroResponse toResponse(Libro libro) {
@@ -150,7 +152,8 @@ public class LibroController {
                 libro.titulo(),
                 libro.Idautor(),
                 libro.anio().getAnio(),
-                libro.url());
+                libro.url(),
+                libro.cantidadDisponible().getCantidad());
     }
 
 }

@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.exagonal001.libros.application.port.in.CreatePrestamoCase;
 import com.exagonal001.libros.application.port.in.DeletePrestamoCase;
+import com.exagonal001.libros.application.port.in.DevolverLibroCase;
 import com.exagonal001.libros.application.port.in.GetAllPrestamoCase;
 import com.exagonal001.libros.application.port.in.GetPrestamoCase;
 import com.exagonal001.libros.application.port.in.UpdatePrestamoCase;
@@ -44,13 +45,17 @@ public class PrestamoController {
     private final GetPrestamoCase getPrestamoCase;
     private final UpdatePrestamoCase updatePrestamoCase;
     private final DeletePrestamoCase deletePrestamoCase;
+    private final DevolverLibroCase devolverPrestamoCase;
 
-    public PrestamoController(CreatePrestamoCase createPrestamoCase, GetAllPrestamoCase getAllPrestamoCase, GetPrestamoCase getPrestamoCase, UpdatePrestamoCase updatePrestamoCase, DeletePrestamoCase deletePrestamoCase) {
+    public PrestamoController(CreatePrestamoCase createPrestamoCase, 
+        GetAllPrestamoCase getAllPrestamoCase, GetPrestamoCase getPrestamoCase,
+         UpdatePrestamoCase updatePrestamoCase, DeletePrestamoCase deletePrestamoCase, DevolverLibroCase devolverPrestamoCase) {
         this.createPrestamoCase = createPrestamoCase;
         this.getAllPrestamoCase = getAllPrestamoCase;
         this.getPrestamoCase = getPrestamoCase;
         this.updatePrestamoCase = updatePrestamoCase;
         this.deletePrestamoCase = deletePrestamoCase;
+        this.devolverPrestamoCase = devolverPrestamoCase;
     }
 
     /**
@@ -71,8 +76,10 @@ public class PrestamoController {
             null,
             UUID.fromString(prestamo.idUsuario()),
             UUID.fromString(prestamo.idLibro()),
+            true, // Assuming the initial estadoPrestamo is true when creating a new loan
             java.time.LocalDate.parse(prestamo.fechaPrestamo()),
             java.time.LocalDate.parse(prestamo.fechaDevolucion())
+            
         );
         var createdPrestamo = createPrestamoCase.createPrestamo(prestamoDomain);
         return toResponse(createdPrestamo);
@@ -149,11 +156,34 @@ public class PrestamoController {
         deletePrestamoCase.deletePrestamo(id);
     }
 
+
+
+    /**
+     * devolver un libro prestado, actualizando la cantidad disponible del libro y eliminando el préstamo correspondiente.
+     * @param id
+     * @param idUsuario
+     * @param prestamo
+     * @return
+     */
+    @Operation(summary = "Devolver un libro prestado", description = "Actualiza la cantidad disponible del libro y marca el préstamo como devuelto")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Libro devuelto correctamente"),
+            @ApiResponse(responseCode = "404", description = "Prestamo no encontrado", content = @Content())
+    })
+        @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    @PutMapping("/devolver/{id}/{idUsuario}")
+    public void devolverLibro(@PathVariable String id, @PathVariable String idUsuario) {
+        devolverPrestamoCase.devolverLibro(id, idUsuario);
+    }
+
+
+
     private PrestamoResponse toResponse(PrestamosLibros prestamo) {
         return new PrestamoResponse(
             prestamo.idPrestamo().toString(),
             prestamo.idUsuario().toString(),
             prestamo.idLibro().toString(),
+            prestamo.estadoPrestamo(),
             prestamo.fechaPrestamo().toString(),
             prestamo.fechaDevolucion().toString()
         );

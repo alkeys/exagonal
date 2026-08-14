@@ -12,4 +12,5 @@ public interface PrestamosRepositoryPort {
     PrestamosLibros findById(String id);
     PrestamosLibros update(String id, LocalDate fechaPrestamo, LocalDate fechaDevolucion);
     void delete(String id);
+    void devolverLibro(String id, String idUsuario);
 }
