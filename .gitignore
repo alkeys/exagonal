@@ -35,3 +35,6 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### Kubernetes Secrets ###
+k8s/secrets.yaml

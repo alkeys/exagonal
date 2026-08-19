@@ -6,7 +6,7 @@ import java.util.UUID;
 import com.exagonal001.user.domain.models.values.DescripcionRol;
 import com.exagonal001.user.domain.models.values.NombreRol;
 
-import lombok.AllArgsConstructor;
+
 
 public record Rol(
     UUID id,

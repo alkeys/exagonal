@@ -1,0 +1,117 @@
+package com.exagonal001.libros.infra.out.persistence.adapter;
+
+import java.time.LocalDate;
+import java.util.List;
+import java.util.UUID;
+
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.exagonal001.libros.application.port.out.PrestamosRepositoryPort;
+import com.exagonal001.libros.domain.models.PrestamosLibros;
+import com.exagonal001.libros.infra.out.persistence.entity.LibroEntity;
+import com.exagonal001.libros.infra.out.persistence.entity.PrestamosEntity;
+import com.exagonal001.libros.infra.out.persistence.repository.SpringDataLibroRepository;
+import com.exagonal001.libros.infra.out.persistence.repository.SpringDataPrestamoRepository;
+import com.exagonal001.user.infra.adapter.out.persistence.repository.SpringDataUserRepository;
+import com.exagonal001.user.infra.adapter.out.persistence.entity.UserEntity;
+
+
+@Repository
+public class JpaPRestamosRepositoryAdapter implements PrestamosRepositoryPort {
+
+    private final SpringDataPrestamoRepository springDataPrestamoRepository;
+    
+    private final SpringDataUserRepository springDataUserRepository;
+
+    private final SpringDataLibroRepository SpringDataLibroRepository;  
+
+    public JpaPRestamosRepositoryAdapter(SpringDataPrestamoRepository springDataPrestamoRepository,
+            SpringDataUserRepository springDataUserRepository, SpringDataLibroRepository springDataLibroRepository) {
+        this.springDataPrestamoRepository = springDataPrestamoRepository;
+        this.springDataUserRepository = springDataUserRepository;
+        this.SpringDataLibroRepository = springDataLibroRepository;
+    }
+
+    @Override
+    public List<PrestamosLibros> findAll() {
+        return springDataPrestamoRepository.findAll().stream()
+                .map(this::toDomain)
+                .toList();
+    }
+
+    @Override
+    public PrestamosLibros findById(String id) {
+        PrestamosEntity prestamosEntity = springDataPrestamoRepository.findById(UUID.fromString(id))
+                .orElseThrow(() -> new RuntimeException("Prestamo no encontrado con id: " + id));
+        return toDomain(prestamosEntity);
+    }
+
+    @Override
+    public PrestamosLibros update(String id, LocalDate fechaPrestamo, LocalDate fechaDevolucion) {
+        PrestamosEntity prestamosEntity = springDataPrestamoRepository.findById(UUID.fromString(id))
+                .orElseThrow(() -> new RuntimeException("Prestamo no encontrado con id: " + id));
+        prestamosEntity.setFechaPrestamo(fechaPrestamo);
+        prestamosEntity.setFechaDevolucion(fechaDevolucion);
+        PrestamosEntity updatedEntity = springDataPrestamoRepository.save(prestamosEntity);
+        return toDomain(updatedEntity);
+    }
+
+    @Override
+    public void delete(String id) {
+        PrestamosEntity prestamosEntity = springDataPrestamoRepository.findById(UUID.fromString(id))
+                .orElseThrow(() -> new RuntimeException("Prestamo no encontrado con id: " + id));
+        springDataPrestamoRepository.delete(prestamosEntity);
+    }
+
+    @Override
+     public PrestamosLibros save(PrestamosLibros prestamosLibros) {
+        LibroEntity libroEntity = new LibroEntity();
+        UserEntity userEntity = springDataUserRepository.findById(prestamosLibros.idUsuario()).orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
+        libroEntity=SpringDataLibroRepository.findById(prestamosLibros.idLibro()).orElseThrow(() -> new IllegalArgumentException("Libro no encontrado"));
+
+        libroEntity.setCantidadDisponible(libroEntity.getCantidadDisponible() - 1);
+        SpringDataLibroRepository.save(libroEntity);
+                
+        PrestamosEntity prestamosEntity = new PrestamosEntity(
+            prestamosLibros.idPrestamo(),
+            userEntity,
+            libroEntity,
+            prestamosLibros.estadoPrestamo(),
+            prestamosLibros.fechaPrestamo(),
+            prestamosLibros.fechaDevolucion()
+        );
+        PrestamosEntity savedEntity = springDataPrestamoRepository.save(prestamosEntity);
+        return toDomain(savedEntity);
+    }
+
+
+    @Override
+    @Transactional
+    public void devolverLibro(String id,String idUsuario) {
+        PrestamosEntity prestamosEntity = springDataPrestamoRepository.findById(UUID.fromString(id))
+                .orElseThrow(() -> new RuntimeException("Prestamo no encontrado con id: " + id));
+        if (!prestamosEntity.isEstadoPrestamo()) {
+            throw new RuntimeException("El prestamo ya fue devuelto");
+        }
+        if (!prestamosEntity.getIdUsuario().getId().equals(UUID.fromString(idUsuario))) {
+            throw new RuntimeException("El prestamo no pertenece al usuario indicado");
+        }
+        LibroEntity libroEntity = prestamosEntity.getIdLibro();
+        libroEntity.setCantidadDisponible(libroEntity.getCantidadDisponible() + 1);
+        prestamosEntity.setEstadoPrestamo(false);
+    }
+
+
+    private PrestamosLibros toDomain(PrestamosEntity entity) {
+        return new PrestamosLibros(
+            entity.getIdPrestamo(),
+            entity.getIdUsuario().getId(),
+            entity.getIdLibro().getId(),
+            entity.isEstadoPrestamo(),
+            entity.getFechaPrestamo(),
+            entity.getFechaDevolucion()
+        );
+    }
+    
+}

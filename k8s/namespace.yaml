@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: biblioteca
+  labels:
+    app.kubernetes.io/name: biblioteca
+    app.kubernetes.io/part-of: biblioteca

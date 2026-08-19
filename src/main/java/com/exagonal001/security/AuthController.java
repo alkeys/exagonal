@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.exagonal001.user.controller.dto.User.UserRequest;
-import com.exagonal001.user.controller.dto.User.UserResponse;
 import com.exagonal001.user.domain.models.User;
+import com.exagonal001.user.infra.adapter.in.web.dto.User.UserRequest;
+import com.exagonal001.user.infra.adapter.in.web.dto.User.UserResponse;
 
 @RestController
 @RequestMapping("/auth")

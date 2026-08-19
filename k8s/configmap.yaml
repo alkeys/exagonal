@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: biblioteca-config
+  namespace: biblioteca
+  labels:
+    app.kubernetes.io/name: biblioteca
+    app.kubernetes.io/component: backend
+data:
+  SPRING_PROFILES_ACTIVE: "prod"
+  SERVER_PORT: "8080"
+
+  # JWT config (non-sensitive) que sueño xdxdxd
+  APP_JWT_EXPIRATION_MS: "86400000"
+  APP_JWT_COOKIE_NAME: "jwt"
+  APP_JWT_COOKIE_PATH: "/"
+  APP_JWT_COOKIE_SECURE: "true"
+  APP_JWT_COOKIE_SAME_SITE: "Lax"
+
+  # JPA / Hibernate
+  SPRING_JPA_HIBERNATE_DDL_AUTO: "validate"
+  SPRING_JPA_OPEN_IN_VIEW: "false"
+  SPRING_JPA_SHOW_SQL: "false"
+
+  # Flyway
+  SPRING_FLYWAY_ENABLED: "true"
+
+  # Swagger (disable in prod or restrict)
+  SPRINGDOC_API_DOCS_ENABLED: "true"
+  SPRINGDOC_API_DOCS_PATH: "/v3/api-docs"
+  SPRINGDOC_SWAGGER_UI_WITH_CREDENTIALS: "true"
